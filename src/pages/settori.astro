@@ -1,0 +1,95 @@
+---
+import Base from '../layouts/Base.astro';
+import AperturaPagina from '../components/AperturaPagina.astro';
+import FotoInclinata from '../components/FotoInclinata.astro';
+import InvitoPreventivo from '../components/InvitoPreventivo.astro';
+
+import fotoApertura from '../assets/foto/flotta-faito-scania-590-500.jpg';
+import fotoAcciaierie from '../assets/foto/lamiere-inclinate-590-r450-pioggia.jpg';
+import fotoCarpenterie from '../assets/foto/lamiere-fuori-sagoma-laterale.jpg';
+import fotoNavali from '../assets/foto/traghetto-lamiere-inclinate.jpg';
+import fotoImpianti from '../assets/foto/scania-autogru-cantiere.jpg';
+
+const settori = [
+  {
+    titolo: 'Acciaierie e centri servizi acciaio',
+    foto: fotoAcciaierie,
+    alt: 'Due Scania Traspogru con semirimorchi a piano inclinato carichi, su strada bagnata',
+    testo: 'Colleghiamo laminatoi, centri servizi e clienti finali con viaggi pianificati sui vostri tempi di produzione. Le lastre di grande formato viaggiano appoggiate sul piano inclinato, senza flessioni e senza segni sulla superficie.',
+    punti: ['Lastre e laminati di grande formato', 'Consegne programmate e ricorrenti', 'Carico protetto da deformazioni'],
+  },
+  {
+    titolo: 'Carpenterie metalliche',
+    foto: fotoCarpenterie,
+    alt: 'Scania Traspogru con lamiere fuori sagoma legate sul semirimorchio',
+    testo: 'Lamiere per strutture, ponti, capannoni e opere in acciaio: consegniamo direttamente in officina o in cantiere, anche dove gli spazi di manovra sono ridotti.',
+    punti: ['Consegna in officina o in cantiere', 'Lamiere di forte spessore', 'Coordinamento con i mezzi di scarico'],
+  },
+  {
+    titolo: 'Cantieri navali',
+    foto: fotoNavali,
+    alt: 'Scania Traspogru con semirimorchio a piano inclinato nella stiva di un traghetto',
+    testo: 'Lamiere per scafi, ponti e sovrastrutture navali. Siamo vettore qualificato Fincantieri ed effettuiamo trasporti per i suoi stabilimenti, anche in regime di trasporto eccezionale. Lavoriamo abitualmente in area portuale e raggiungiamo i cantieri delle isole viaggiando in traghetto con i nostri mezzi.',
+    punti: ['Vettore qualificato Fincantieri', 'Accesso alle aree portuali', 'Viaggi in traghetto verso le isole', 'Lamiere di grandi dimensioni'],
+  },
+  {
+    titolo: 'Impianti e macchinari industriali',
+    foto: fotoImpianti,
+    alt: 'Scania Traspogru con semirimorchio in cantiere mentre un’autogrù scarica il materiale',
+    testo: 'Per i costruttori di impianti e macchine trasportiamo lamiere e componenti di grandi dimensioni, coordinando carico e scarico con le gru di cantiere.',
+    punti: ['Componenti fuori misura', 'Scarico coordinato con autogrù', 'Trasporti eccezionali quando servono'],
+  },
+];
+---
+
+<Base
+  titolo="Settori: acciaierie, carpenterie, cantieri navali, impianti"
+  descrizione="Trasporto lamiere per acciaierie e centri servizi, carpenterie metalliche, cantieri navali e costruttori di impianti industriali. In tutta Italia."
+  headerSuHero
+>
+  <AperturaPagina
+    etichetta="Settori"
+    titolo="Per chi lavora <em>con</em> l’acciaio."
+    sottotitolo="Quattro mondi diversi, un’esigenza comune: lamiere grandi che devono arrivare intatte, nei tempi giusti."
+    foto={fotoApertura}
+    alt="Due Scania Traspogru con semirimorchi a piano inclinato davanti al Monte Faito"
+  />
+
+  {settori.map((s, i) => (
+    <section id={`settore-${i + 1}`} class:list={['settore', i % 2 ? 'tema-scuro' : 'tema-chiaro', 'taglio-alto']} aria-labelledby={`settore-${i + 1}-titolo`}>
+      <div class:list={['contenitore', 'riga', { invertita: i % 2 }]}>
+        <div class="testo appare">
+          <p class="etichetta"><span class="numero">{String(i + 1).padStart(2, '0')}</span> / 04</p>
+          <h2 id={`settore-${i + 1}-titolo`}>{s.titolo}</h2>
+          <p class="lead">{s.testo}</p>
+          <ul>
+            {s.punti.map((p) => <li>{p}</li>)}
+          </ul>
+        </div>
+        <FotoInclinata src={s.foto} alt={s.alt} verso={i % 2 ? 'sinistra' : 'destra'} />
+      </div>
+    </section>
+  ))}
+
+  <InvitoPreventivo titolo="Il tuo settore <em>non</em> è in elenco?" testo="Se devi spostare lamiere o carichi fuori misura, parliamone: valutiamo ogni richiesta e ti diciamo con chiarezza se e come possiamo farlo." />
+</Base>
+
+<style>
+  .settore { padding-bottom: var(--sezione); scroll-margin-top: 60px; }
+  .riga { display: grid; grid-template-columns: 1fr 1.2fr; gap: 3rem 5rem; align-items: center; }
+  .invertita > :first-child { order: 2; }
+  .testo { display: grid; gap: 1.2rem; justify-items: start; }
+  .testo .etichetta { margin: 0; }
+  .numero { color: var(--accento); }
+  .lead { margin: 0; }
+  ul { list-style: none; margin: 0.5rem 0 0; padding: 0; display: grid; gap: 0.6rem; }
+  li { position: relative; padding-left: 1.8rem; }
+  li::before {
+    content: ''; position: absolute; left: 0; top: 0.55em; width: 14px; height: 8px;
+    background: var(--accento); clip-path: polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%);
+  }
+  @media (max-width: 899px) {
+    .riga { grid-template-columns: 1fr; }
+    .invertita > :first-child { order: 0; }
+  }
+</style>

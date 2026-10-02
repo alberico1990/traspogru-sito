@@ -1,0 +1,31 @@
+---
+interface Props {
+  id?: string;
+  numero?: string;
+  etichetta: string;
+  titolo: string;
+  livello?: 'h1' | 'h2';
+}
+const { id, numero, etichetta, titolo, livello = 'h2' } = Astro.props;
+const Titolo = livello;
+---
+
+<div class="intestazione appare">
+  <p class="etichetta riga-rotta">
+    {numero && <span class="numero">{numero}</span>}
+    <span class="tratto" aria-hidden="true"></span>
+    {etichetta}
+  </p>
+  <Titolo id={id} set:html={titolo} />
+  <slot />
+</div>
+
+<style>
+  .intestazione { display: grid; gap: 1.4rem; margin-bottom: clamp(2.5rem, 2rem + 2vw, 4rem); }
+  .intestazione :global(h1), .intestazione :global(h2) { max-width: 12em; }
+  /* parola evidenziata nel titolo: <em> */
+  .intestazione :global(em) { font-style: normal; color: var(--accento); }
+  .riga-rotta { display: flex; align-items: center; gap: 0.9rem; margin: 0; }
+  .numero { color: var(--accento); }
+  .tratto { width: 48px; height: 1.5px; background: currentColor; transform: skewY(-12deg); opacity: 0.6; }
+</style>

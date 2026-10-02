@@ -1,0 +1,36 @@
+---
+// Layout per pagine di solo testo (privacy, cookie, 404).
+import Base from './Base.astro';
+
+interface Props { titolo: string; descrizione: string; etichetta: string; aggiornato?: string; noindex?: boolean }
+const { titolo, descrizione, etichetta, aggiornato, noindex = false } = Astro.props;
+---
+
+<Base titolo={titolo} descrizione={descrizione} noindex={noindex}>
+  <section class="testa tema-scuro taglio-basso">
+    <div class="contenitore">
+      <p class="etichetta">{etichetta}</p>
+      <h1>{titolo}</h1>
+      {aggiornato && <p class="etichetta agg">Ultimo aggiornamento: {aggiornato}</p>}
+    </div>
+  </section>
+  <section class="tema-chiaro corpo">
+    <div class="contenitore prosa">
+      <slot />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .testa { padding: 7rem 0 calc(4rem + var(--pendenza)); background: var(--notte-950); }
+  .testa .contenitore { display: grid; gap: 1.2rem; }
+  .agg { color: var(--giallo); }
+  .corpo { padding: 4rem 0 var(--sezione); }
+  .prosa { max-width: 780px; }
+  .prosa :global(h2) { font-size: clamp(1.7rem, 1.3rem + 1.4vw, 2.4rem); margin: 3rem 0 1rem; }
+  .prosa :global(h2:first-child) { margin-top: 0; }
+  .prosa :global(p), .prosa :global(li) { color: var(--acciaio-800); }
+  .prosa :global(ul) { padding-left: 1.2rem; display: grid; gap: 0.4rem; margin: 0 0 1em; }
+  .prosa :global(a) { color: var(--blu); }
+  .prosa :global(.segnaposto) { background: #fff4b8; padding: 0 0.25em; }
+</style>

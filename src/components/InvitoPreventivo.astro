@@ -1,0 +1,35 @@
+---
+// Chiusura comune delle pagine interne: invito al preventivo con i tre canali.
+import Pulsante from './Pulsante.astro';
+import { whatsappLink, TESTO_WHATSAPP_PREVENTIVO, SITO } from '../config/sito';
+
+interface Props { titolo?: string; testo?: string }
+const {
+  titolo = 'Hai un carico <em>fuori sagoma</em>?',
+  testo = 'Raccontaci cosa devi spostare: tipo di lamiera, misure indicative, peso, partenza e arrivo. Ti rispondiamo con una proposta su misura.',
+} = Astro.props;
+---
+
+<section class="invito tema-scuro taglio-alto">
+  <div class="contenitore riga">
+    <div>
+      <h2 set:html={titolo} />
+      <p class="lead">{testo}</p>
+    </div>
+    <div class="azioni">
+      <Pulsante href="/contatti">Richiedi un preventivo</Pulsante>
+      <Pulsante href={whatsappLink(TESTO_WHATSAPP_PREVENTIVO)} variante="secondario" esterno>WhatsApp</Pulsante>
+      <Pulsante href={`tel:${SITO.telefono.replace(/\s/g, '')}`} variante="testo">{SITO.telefonoVisibile}</Pulsante>
+    </div>
+  </div>
+</section>
+
+<style>
+  .invito { padding-bottom: var(--sezione); background: radial-gradient(ellipse at 90% 0%, rgb(90 182 214 / 0.16), transparent 50%), var(--notte-900); }
+  .riga { display: grid; grid-template-columns: 1.3fr 1fr; gap: 2rem 4rem; align-items: end; }
+  h2 { margin-bottom: 1.5rem; }
+  h2 :global(em) { font-style: normal; color: var(--giallo); }
+  .lead { margin: 0; }
+  .azioni { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; }
+  @media (max-width: 899px) { .riga { grid-template-columns: 1fr; } }
+</style>

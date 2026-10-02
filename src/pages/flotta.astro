@@ -1,0 +1,157 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import AperturaPagina from '../components/AperturaPagina.astro';
+import IntestazioneSezione from '../components/IntestazioneSezione.astro';
+import InvitoPreventivo from '../components/InvitoPreventivo.astro';
+import Pulsante from '../components/Pulsante.astro';
+
+import fotoApertura from '../assets/foto/scania-r450-arancione-notte.jpg';
+import s590 from '../assets/foto/flotta-scania-590-500-tecnokar.jpg';
+import frontale from '../assets/foto/flotta-scania-daf-frontale.jpg';
+import daf from '../assets/foto/daf-xg-lamiere-inclinate.jpg';
+import diabolik from '../assets/foto/diabolik-semirimorchio.jpg';
+import pioggia from '../assets/foto/lamiere-inclinate-590-r450-pioggia.jpg';
+import bobine from '../assets/foto/bobine-cavo-r450.jpg';
+import traghetto from '../assets/foto/traghetto-lamiere-inclinate.jpg';
+import carrelloPrimoPiano from '../assets/foto/carrello-16t-primo-piano.jpg';
+import carrelliTandem from '../assets/foto/carrelli-tandem-lamiera.jpg';
+
+const mezzi = [
+  { foto: s590, nome: 'Scania S 590', tipo: 'Trattore stradale', testo: 'L’ammiraglia della flotta, con la livrea bianca e verde firmata “590”.', alt: 'Scania S 590 bianco e verde con la scritta 590 TraspoGru in un parcheggio', classe: 'grande' },
+  { foto: frontale, nome: 'Scania S 500 Super', tipo: 'Trattore stradale', testo: 'Grigio argento, grifone sulla fiancata: potenza e consumi sotto controllo sulle lunghe tratte.', alt: 'Scania S 500 Super grigio e DAF XG grigio visti di fronte nel piazzale', classe: '' },
+  { foto: daf, nome: 'DAF XG', tipo: 'Trattore stradale', testo: 'Cabina di nuova generazione, qui agganciato a un semirimorchio a piano inclinato.', alt: 'DAF XG grigio con semirimorchio rosso a piano inclinato', classe: '' },
+  { foto: bobine, nome: 'Scania R450 Streamline', tipo: 'Trattore stradale', testo: 'L’arancione che si riconosce da lontano. Qui con un carico di bobine su pianale.', alt: 'Scania R450 arancione con bobine di cavo sul pianale', classe: 'larga' },
+  { foto: pioggia, nome: 'Semirimorchi a piano inclinato', tipo: 'Il cuore della specializzazione', testo: 'Allestiti per trasportare lamiere in obliquo: il carico appoggia sulla struttura e l’ingombro laterale si riduce.', alt: 'Semirimorchi verdi e arancioni a piano inclinato agganciati a due Scania', classe: 'larga' },
+  { foto: diabolik, nome: 'Semirimorchio telonato “Diabolik”', tipo: 'Merci su pallet', testo: 'Per i carichi che devono viaggiare coperti. E per farsi ricordare sulla strada.', alt: 'Retro del semirimorchio telonato con la grafica Diabolik e la scritta traspogru srl', classe: '' },
+];
+
+const principi = [
+  { titolo: 'Mezzi recenti', testo: 'Trattori di ultima generazione: più sicurezza, più affidabilità, meno emissioni per chilometro.' },
+  { titolo: 'Manutenzione costante', testo: 'Officine autorizzate e controlli regolari: i mezzi fermi non consegnano.' },
+  { titolo: 'Allestimenti dedicati', testo: 'Semirimorchi pensati per le lamiere, non adattati all’ultimo momento.' },
+];
+---
+
+<Base
+  titolo="La flotta: trattori Scania e DAF, semirimorchi a piano inclinato"
+  descrizione="La flotta Traspogru: trattori Scania e DAF di ultima generazione, semirimorchi a piano inclinato e carrelli elevatori fino a 16 t per il trasporto e la movimentazione di lamiere fuori sagoma."
+  headerSuHero
+>
+  <AperturaPagina
+    etichetta="Flotta"
+    titolo="Mezzi curati <em>come</em> il carico."
+    sottotitolo="Trattori Scania e DAF di ultima generazione e semirimorchi allestiti per le lamiere. Li teniamo come li vedete: in ordine, puliti, pronti a partire."
+    foto={fotoApertura}
+    alt="Scania R450 arancione Traspogru con fari accesi su un pavimento bagnato"
+  />
+
+  <section class="blocco tema-chiaro taglio-alto">
+    <div class="contenitore">
+      <ul class="principi">
+        {principi.map((p) => <li class="appare"><h2>{p.titolo}</h2><p>{p.testo}</p></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="blocco tema-scuro taglio-alto">
+    <div class="contenitore">
+      <IntestazioneSezione numero="01" etichetta="In strada" titolo="Conosci la <em>squadra</em>." />
+      <ul class="griglia">
+        {mezzi.map((m) => (
+          <li class:list={['mezzo appare', m.classe]}>
+            <Image src={m.foto} alt={m.alt} widths={[480, 800, 1200, 1600]} sizes="(max-width: 899px) 100vw, 50vw" />
+            <div class="info">
+              <span class="etichetta">{m.tipo}</span>
+              <h3>{m.nome}</h3>
+              <p>{m.testo}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <div class="carrelli" id="carrelli">
+        <div class="carrelli-testo appare">
+          <IntestazioneSezione numero="02" etichetta="Movimentazione" titolo="Carrelli elevatori <em>fino a 16 t</em>." />
+          <p class="lead">Carichiamo e scarichiamo con carrelli elevatori nostri, fino a 16 tonnellate di portata. Per le lastre più grandi lavorano in tandem: più carrelli sulla stessa lamiera, per sollevarla in sicurezza.</p>
+          <ul class="punti">
+            <li>Portata fino a 16 t</li>
+            <li>Più carrelli in tandem per le lamiere di grande formato</li>
+            <li>Lamiere, tubi e carichi lunghi</li>
+            <li>Carico e scarico con mezzi propri</li>
+          </ul>
+        </div>
+        <figure class="clip appare">
+          <video autoplay muted loop playsinline preload="metadata" poster="/video/carrelli-16t-poster.jpg" aria-label="Un carrello elevatore da 16 tonnellate carica dei tubi su un camion">
+            <source src="/video/carrelli-16t-av1.mp4" type='video/mp4; codecs="av01.0.05M.08"' />
+            <source src="/video/carrelli-16t-h264.mp4" type="video/mp4" />
+          </video>
+          <figcaption class="etichetta">Un carrello da 16 t al lavoro</figcaption>
+        </figure>
+        <figure class="foto-car appare">
+          <Image src={carrelloPrimoPiano} alt="Carrello elevatore giallo da 16 tonnellate con forche rosse, davanti a un magazzino" widths={[640, 1000, 1400]} sizes="(max-width: 899px) 100vw, 50vw" />
+        </figure>
+        <figure class="foto-car appare">
+          <Image src={carrelliTandem} alt="Due carrelli elevatori gialli sollevano insieme una grande lamiera nel piazzale" widths={[640, 1000, 1400]} sizes="(max-width: 899px) 100vw, 50vw" />
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="blocco tema-chiaro taglio-alto">
+    <div class="contenitore mare">
+      <Image src={traghetto} alt="Scania Traspogru bianco con semirimorchio a piano inclinato nella stiva di un traghetto" widths={[640, 1000, 1400]} sizes="(max-width: 899px) 100vw, 45vw" class="foto-mare" />
+      <div class="appare">
+        <IntestazioneSezione numero="03" etichetta="Anche via mare" titolo="Le isole <em>non</em> sono un limite." />
+        <p class="lead">Per Sicilia, Sardegna e isole minori imbarchiamo i nostri mezzi sui traghetti: il carico non cambia mai mano, dal punto di partenza alla destinazione.</p>
+        <Pulsante href="/contatti" variante="secondario">Chiedi un preventivo</Pulsante>
+      </div>
+    </div>
+  </section>
+
+  <InvitoPreventivo />
+</Base>
+
+<style>
+  .blocco { padding-bottom: var(--sezione); }
+  .principi { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; }
+  .principi li { border-top: 2px solid var(--accento); padding-top: 1.2rem; }
+  .principi h2 { font-size: var(--t-h3); line-height: 1; margin-bottom: 0.7rem; }
+  .principi p { margin: 0; color: var(--testo-tenue); }
+
+  .griglia { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem 1.5rem; grid-auto-flow: dense; }
+  .grande { grid-column: span 2; grid-row: span 2; }
+  .larga { grid-column: span 2; }
+  .mezzo :global(img) {
+    width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover;
+    clip-path: polygon(0 0, calc(100% - 32px) 0, 100% 32px, 100% 100%, 0 100%);
+  }
+  .grande :global(img) { aspect-ratio: 4 / 4.2; }
+  .larga :global(img) { aspect-ratio: 16 / 7.6; }
+  .info { display: grid; gap: 0.4rem; padding-top: 1.1rem; }
+  .info .etichetta { color: var(--accento); }
+  .info p { margin: 0; color: var(--testo-tenue); }
+
+  .carrelli { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: clamp(4rem, 3rem + 5vw, 8rem); align-items: start; }
+  .carrelli-testo { grid-column: 1; display: grid; gap: 1.2rem; align-content: start; }
+  .carrelli-testo .lead { margin: 0; }
+  .punti { list-style: none; margin: 0.6rem 0 0; padding: 0; display: grid; gap: 0.6rem; }
+  .punti li { position: relative; padding-left: 1.8rem; }
+  .punti li::before { content: ''; position: absolute; left: 0; top: 0.55em; width: 14px; height: 8px; background: var(--giallo); clip-path: polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%); }
+  .clip { grid-column: 2; margin: 0; }
+  .clip video { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; background: var(--notte-950); clip-path: polygon(0 0, calc(100% - 32px) 0, 100% 32px, 100% 100%, 0 100%); }
+  .clip figcaption { margin-top: 0.7rem; }
+  .foto-car { margin: 0; }
+  .foto-car :global(img) { width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; clip-path: polygon(0 0, calc(100% - 32px) 0, 100% 32px, 100% 100%, 0 100%); }
+  .mare { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem 5rem; align-items: center; }
+  .mare :global(.foto-mare) { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--pendenza)), 0 100%); }
+  .mare .lead { margin-bottom: 2rem; }
+
+  @media (max-width: 899px) {
+    .principi, .mare, .carrelli { grid-template-columns: 1fr; }
+    .carrelli-testo, .clip { grid-column: auto; }
+    .griglia { grid-template-columns: 1fr; }
+    .grande, .larga { grid-column: auto; grid-row: auto; }
+    .grande :global(img), .larga :global(img) { aspect-ratio: 4 / 3; }
+  }
+</style>

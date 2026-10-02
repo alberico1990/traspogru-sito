@@ -1,0 +1,122 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import AperturaPagina from '../components/AperturaPagina.astro';
+import InvitoPreventivo from '../components/InvitoPreventivo.astro';
+import LogoFincantieri from '../components/LogoFincantieri.astro';
+
+import fotoApertura from '../assets/foto/ancora-navale-imbracatura.jpg';
+import ancora from '../assets/foto/ancora-navale-sollevamento.jpg';
+import tandem from '../assets/foto/carrelli-lamiera-sollevata.jpg';
+import barche from '../assets/foto/barche-legno-scania.jpg';
+import gru from '../assets/foto/gru-torre-centro-storico.jpg';
+import bobine from '../assets/foto/bobine-cavo-r450.jpg';
+import autogru from '../assets/foto/scania-autogru-cantiere.jpg';
+import lamiere from '../assets/foto/lamiere-fuori-sagoma-laterale.jpg';
+
+// Casi raccontati in modo generico (scelta del cliente): cosa, dove in senso lato, qual era la difficolta'.
+const lavori = [
+  {
+    foto: lamiere, alt: 'Scania Traspogru con lamiere fuori sagoma caricate in obliquo e legate con cinghie',
+    categoria: 'Lamiere fuori sagoma', titolo: 'Lastre più larghe del semirimorchio',
+    sfida: 'Lamiere di grande formato che, appoggiate in piano, avrebbero sporto oltre la sagoma.',
+    soluzione: 'Carico su piano inclinato, fissaggio con cinghie e protezioni sugli spigoli: il viaggio è partito con l’ingombro ridotto al minimo.',
+  },
+  {
+    foto: tandem, alt: 'Due carrelli elevatori gialli sollevano insieme una grande lamiera nel piazzale, con altri mezzi sullo sfondo',
+    categoria: 'Carrelli elevatori', titolo: 'Una lamiera sollevata in tandem',
+    sfida: 'Una lastra di grandi dimensioni, troppo lunga per essere sollevata da un solo carrello.',
+    soluzione: 'Due carrelli la sollevano insieme, ripartendo il peso su più punti di appoggio: poi la lamiera passa sul semirimorchio.',
+  },
+  {
+    foto: ancora, alt: 'Ancora navale di grandi dimensioni sollevata sopra il pianale Traspogru, con la costa sullo sfondo',
+    categoria: 'Per Fincantieri', titolo: 'Un’ancora navale per Fincantieri',
+    sfida: 'Un pezzo pesante, dalla forma irregolare, da caricare in area portuale.',
+    soluzione: 'Sollevamento con gru e imbracatura dedicata, appoggio su travi in legno e fissaggio a catena sul pianale.',
+  },
+  {
+    foto: gru, alt: 'Scania Traspogru in una via del centro storico mentre una gru scarica un tronco di gru a torre',
+    categoria: 'Centro storico', titolo: 'Una gru a torre tra i palazzi',
+    sfida: 'Consegnare i tronchi di una gru a torre in una via stretta, davanti a un palazzo storico.',
+    soluzione: 'Manovre pianificate con il cantiere e scarico coordinato con l’autogrù, riducendo al minimo l’occupazione della strada.',
+  },
+  {
+    foto: barche, alt: 'Tre barche storiche in legno caricate sul semirimorchio dello Scania Traspogru',
+    categoria: 'Trasporto conservativo', titolo: 'Barche storiche in legno',
+    sfida: 'Scafi delicati, da spostare senza sollecitare il fasciame.',
+    soluzione: 'Appoggi morbidi, carico distribuito lungo il pianale e velocità adeguata per tutto il tragitto.',
+  },
+  {
+    foto: bobine, alt: 'Scania R450 arancione con bobine di cavo legate sul pianale',
+    categoria: 'Cantiere', titolo: 'Bobine di cavo',
+    sfida: 'Bobine di diverso diametro, che tendono a rotolare.',
+    soluzione: 'Disposizione in fila, cunei e cinghie su ogni bobina: carico compatto e stabile.',
+  },
+  {
+    foto: autogru, alt: 'Scania Traspogru con semirimorchio in cantiere mentre un’autogrù scarica il materiale',
+    categoria: 'Cantiere', titolo: 'Scarico con autogrù',
+    sfida: 'Consegna su terreno non pavimentato, con scarico diretto in cantiere.',
+    soluzione: 'Posizionamento del mezzo concordato con il gruista e scarico in sicurezza, un collo alla volta.',
+  },
+];
+---
+
+<Base
+  titolo="Lavori realizzati: trasporti fuori misura"
+  descrizione="Alcuni trasporti realizzati da Traspogru: lamiere fuori sagoma, un'ancora navale, una gru a torre in centro storico, barche storiche e bobine di cavo."
+  headerSuHero
+>
+  <AperturaPagina
+    etichetta="Lavori realizzati"
+    titolo="Ogni carico <em>ha</em> la sua storia."
+    sottotitolo="La nostra specialità sono le lamiere. L’esperienza con i carichi fuori misura ci ha portato anche su lavori diversi: eccone alcuni."
+    foto={fotoApertura}
+    alt="Operatore con casco imbraca un’ancora navale sul pianale Traspogru, con il castello sulla collina sullo sfondo"
+  />
+
+  <section class="blocco tema-chiaro taglio-alto">
+    <div class="contenitore">
+      <ol class="casi">
+        {lavori.map((l, i) => (
+          <li class:list={['caso appare', { inverso: i % 2 }]}>
+            <div class="foto"><Image src={l.foto} alt={l.alt} widths={[640, 1000, 1400]} sizes="(max-width: 899px) 100vw, 55vw" /></div>
+            <div class="testo">
+              <p class="etichetta"><span class="numero">{String(i + 1).padStart(2, '0')}</span> · {l.categoria}</p>
+              <h2>{l.titolo}</h2>
+              {l.categoria === 'Per Fincantieri' && <p class="per-fc etichetta">Committente <LogoFincantieri altezza="1.1em" tono="scuro" /></p>}
+              <dl>
+                <dt class="etichetta">La sfida</dt><dd>{l.sfida}</dd>
+                <dt class="etichetta">Come l’abbiamo risolta</dt><dd>{l.soluzione}</dd>
+              </dl>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <InvitoPreventivo titolo="Hai un carico <em>difficile</em>?" testo="Se è grande, pesante o di forma irregolare, raccontacelo: valutiamo con te come trasportarlo in sicurezza." />
+</Base>
+
+<style>
+  .blocco { padding-bottom: var(--sezione); }
+  .casi { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(4rem, 3rem + 5vw, 8rem); }
+  .caso { display: grid; grid-template-columns: 1.25fr 1fr; gap: 2.5rem 4.5rem; align-items: center; }
+  .inverso .foto { order: 2; }
+  .foto { overflow: hidden; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 3vw), 0 100%); }
+  .inverso .foto { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 3vw)); }
+  .foto :global(img) { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; transition: transform 1s var(--ease-out); }
+  .caso:hover .foto :global(img) { transform: scale(1.03); }
+  .testo { display: grid; gap: 1.2rem; }
+  .testo > .etichetta { margin: 0; }
+  .numero { color: var(--accento); }
+  .per-fc { display: flex; align-items: center; gap: 0.7rem; margin: 0; }
+  h2 { font-size: clamp(2rem, 1.4rem + 2.4vw, 3.4rem); }
+  dl { margin: 0; display: grid; gap: 0.4rem; }
+  dt { margin-top: 0.8rem; color: var(--accento); }
+  dd { margin: 0; color: var(--testo-tenue); max-width: 48ch; }
+  @media (max-width: 899px) {
+    .caso { grid-template-columns: 1fr; }
+    .inverso .foto { order: 0; }
+  }
+</style>

@@ -1,0 +1,176 @@
+/* ===== Token ===== */
+:root {
+  /* Marchio (dal PDF del logo) */
+  --blu: #003974;
+  --azzurro: #5ab6d6;
+  --giallo: #fff200;
+  --giallo-ombra: #e3d200;
+
+  /* Scala notte: sezioni scure, derivate dal blu del marchio */
+  --notte-950: #040b16;
+  --notte-900: #071427;
+  --notte-800: #0b1d38;
+  --notte-700: #12294b;
+  --notte-600: #1d3a63;
+
+  /* Scala acciaio: sezioni chiare, grigi freddi da lamiera */
+  --acciaio-50: #f4f6f8;
+  --acciaio-100: #e8ecf0;
+  --acciaio-200: #d3dae1;
+  --acciaio-400: #8e9aa7;
+  --acciaio-600: #55616e;
+  --acciaio-800: #27313c;
+  --inchiostro: #0b1520;
+
+  /* Tipografia */
+  --f-display: 'Big Shoulders Display Variable', 'Arial Narrow', sans-serif;
+  --f-testo: 'Schibsted Grotesk Variable', 'Segoe UI', sans-serif;
+  --f-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --t-mega: clamp(3.6rem, 1.2rem + 10vw, 11rem);
+  --t-h1: clamp(2.8rem, 1.4rem + 5.6vw, 6.5rem);
+  --t-h2: clamp(2.2rem, 1.3rem + 3.4vw, 4.4rem);
+  --t-h3: clamp(1.45rem, 1.2rem + 1vw, 2rem);
+  --t-lead: clamp(1.1rem, 1rem + 0.45vw, 1.35rem);
+  --t-testo: 1.0625rem;
+  --t-piccolo: 0.875rem;
+  --t-etichetta: 0.75rem;
+
+  /* Spazi e griglia */
+  --gutter: clamp(1rem, 0.5rem + 2.5vw, 3rem);
+  --max: 1360px;
+  --sezione: clamp(5rem, 3rem + 8vw, 11rem);
+
+  /* Il piano inclinato: tutti i tagli diagonali usano questa pendenza */
+  --pendenza: 5vw;
+
+  /* Movimento */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* ===== Base ===== */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; interpolate-size: allow-keywords; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  overflow-x: clip; /* il nastro inclinato esce dai bordi: niente scroll orizzontale */
+  font-family: var(--f-testo);
+  font-size: var(--t-testo);
+  line-height: 1.6;
+  color: var(--inchiostro);
+  background: var(--acciaio-50);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+img, video, svg { display: block; max-width: 100%; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--giallo); outline-offset: 3px; }
+::selection { background: var(--giallo); color: var(--inchiostro); }
+
+h1, h2, h3 {
+  font-family: var(--f-display);
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  margin: 0;
+  text-wrap: balance;
+}
+h1 { font-size: var(--t-h1); }
+h2 { font-size: var(--t-h2); }
+h3 { font-size: var(--t-h3); line-height: 1; letter-spacing: 0; }
+p { margin: 0 0 1em; text-wrap: pretty; max-width: 65ch; }
+
+/* ===== Temi di sezione: scuro (notte) e chiaro (acciaio) ===== */
+.tema-scuro {
+  --fondo: var(--notte-900);
+  --testo: #e9eef4;
+  --testo-tenue: #9fb1c6;
+  --linea: rgb(90 182 214 / 0.22);
+  --accento: var(--giallo);
+  background: var(--fondo);
+  color: var(--testo);
+}
+.tema-chiaro {
+  --fondo: var(--acciaio-50);
+  --testo: var(--inchiostro);
+  --testo-tenue: var(--acciaio-600);
+  --linea: rgb(0 57 116 / 0.14);
+  --accento: var(--blu);
+  background: var(--fondo);
+  color: var(--testo);
+}
+
+/* ===== Utilita' ===== */
+.contenitore { width: min(100% - 2 * var(--gutter), var(--max)); margin-inline: auto; }
+.etichetta {
+  font-family: var(--f-mono);
+  font-size: var(--t-etichetta);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--testo-tenue);
+}
+.lead { font-size: var(--t-lead); line-height: 1.5; color: var(--testo-tenue); }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* Griglia da tavola tecnica, usata come texture sulle sezioni chiare */
+.griglia-tecnica {
+  background-image:
+    linear-gradient(var(--linea) 1px, transparent 1px),
+    linear-gradient(90deg, var(--linea) 1px, transparent 1px);
+  background-size: 64px 64px;
+  background-position: -1px -1px;
+}
+
+/* Tagli diagonali: la sezione "sale" come una lamiera sul piano inclinato */
+.taglio-alto { clip-path: polygon(0 var(--pendenza), 100% 0, 100% 100%, 0 100%); margin-top: calc(-1 * var(--pendenza)); padding-top: calc(var(--sezione) + var(--pendenza)); }
+.taglio-basso { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - var(--pendenza))); padding-bottom: calc(var(--sezione) + var(--pendenza)); }
+
+/* ===== Transizioni fra pagine: "tendina" diagonale (View Transitions native, zero JavaScript) =====
+   La pagina vecchia si ritira dietro un bordo inclinato; la nuova la segue con un leggero ritardo.
+   Nello spazio tra le due resta visibile il fondo a strisce da segnaletica: una lama che attraversa lo schermo. */
+@view-transition { navigation: auto; }
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-image-pair(root) {
+    background: repeating-linear-gradient(-55deg, var(--giallo) 0 26px, var(--notte-900) 26px 52px);
+  }
+  ::view-transition-old(root) { animation: 620ms var(--ease-in-out) both tendina-via; }
+  ::view-transition-new(root) { animation: 620ms var(--ease-in-out) 110ms both tendina-entra; }
+}
+@keyframes tendina-via {
+  from { clip-path: polygon(0% 0, 100% 0, 100% 100%, -18% 100%); }
+  to   { clip-path: polygon(118% 0, 100% 0, 100% 100%, 100% 100%); }
+}
+@keyframes tendina-entra {
+  from { clip-path: polygon(0 0, 0% 0, -18% 100%, 0 100%); }
+  to   { clip-path: polygon(0 0, 118% 0, 100% 100%, 0 100%); }
+}
+
+/* ===== Comparsa allo scroll (CSS scroll-driven, con fallback: visibile) ===== */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .appare {
+      animation-name: appare; animation-timing-function: linear; animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 28%;
+    }
+  }
+}
+@keyframes appare { from { opacity: 0; transform: translateY(48px); } }
+
+/* Telefono o browser senza scroll-driven: comparsa a tempo quando l'elemento entra in vista.
+   La classe .comparsa-js la mette lo script in <head>, quindi senza JavaScript tutto resta visibile. */
+@media (prefers-reduced-motion: no-preference) {
+  .comparsa-js .appare { animation: none; opacity: 0; transform: translateY(40px); transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out); }
+  .comparsa-js .appare.visibile { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}

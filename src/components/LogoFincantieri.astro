@@ -1,0 +1,44 @@
+---
+// Logo Fincantieri (marchio registrato; file da Wikimedia Commons, vedi sorgenti/logo-terzi/FONTE.txt).
+// Effetto: entrando nello schermo il logo si "incide" da sinistra a destra, poi un riflesso metallico
+// lo attraversa periodicamente. Il logo e' una maschera: il colore/riflesso e' lo sfondo che ci scorre sotto.
+// Senza JavaScript o con "riduci movimento" resta semplicemente visibile e fermo.
+import logo from '../assets/logo/fincantieri.svg?url';
+
+interface Props { altezza?: string; tono?: 'chiaro' | 'scuro'; class?: string }
+const { altezza = '1.2em', tono = 'chiaro', class: classe } = Astro.props;
+---
+
+<span class:list={['logo-fc', tono, classe]} role="img" aria-label="Fincantieri" style={`--h:${altezza}; --logo:url("${logo}")`} data-logo-fc></span>
+
+<script>
+  // l'incisione parte quando il logo entra in vista (tutti i browser)
+  const oss = new IntersectionObserver((voci) => {
+    for (const v of voci) if (v.isIntersecting) { ((v.target as any).__logo as HTMLElement).classList.add('inciso'); oss.unobserve(v.target); }
+  }, { threshold: 0.5 });
+  // si osserva il contenitore: il logo, nascosto dalla clip-path, per l'observer avrebbe area zero
+  document.querySelectorAll<HTMLElement>('[data-logo-fc]').forEach((el) => {
+    el.classList.add('pronto');
+    const box = el.parentElement!; (box as any).__logo = el; oss.observe(box);
+  });
+</script>
+
+<style>
+  .logo-fc {
+    display: inline-block; vertical-align: middle; flex-shrink: 0;
+    height: var(--h); aspect-ratio: 162.41 / 18.53;
+    -webkit-mask: var(--logo) center / contain no-repeat; mask: var(--logo) center / contain no-repeat;
+  }
+  /* colore base + banda di luce larga che scorre (background a 300% per avere il riflesso fuori campo a riposo) */
+  .chiaro { background: linear-gradient(105deg, #dfe6ee 0 42%, #ffffff 47%, #fff7a8 50%, #ffffff 53%, #dfe6ee 58% 100%) 120% 0 / 300% 100%; }
+  .scuro { background: linear-gradient(105deg, var(--blu) 0 42%, #2f6cb3 47%, #8fd0ec 50%, #2f6cb3 53%, var(--blu) 58% 100%) 120% 0 / 300% 100%; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .logo-fc.pronto { clip-path: inset(0 100% 0 0); }
+    .logo-fc.inciso {
+      animation: incidi 1.1s var(--ease-out) forwards, riflesso 5s var(--ease-in-out) 1.2s infinite;
+    }
+  }
+  @keyframes incidi { to { clip-path: inset(0 0 0 0); } }
+  @keyframes riflesso { 0% { background-position: 120% 0; } 35%, 100% { background-position: -20% 0; } }
+</style>

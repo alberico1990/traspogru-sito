@@ -1,0 +1,127 @@
+---
+import Pulsante from '../Pulsante.astro';
+---
+
+<section class="hero tema-scuro" aria-labelledby="hero-titolo">
+  <!-- Poster come <picture>: su telefono mostra gia' il ritaglio verticale, prima che parta il video -->
+  <picture class="poster" aria-hidden="true">
+    <source media="(max-width: 767px) and (orientation: portrait)" srcset="/video/hero-poster-mobile.avif" type="image/avif" />
+    <source media="(max-width: 767px) and (orientation: portrait)" srcset="/video/hero-poster-mobile.webp" type="image/webp" />
+    <source srcset="/video/hero-poster.avif" type="image/avif" />
+    <source srcset="/video/hero-poster.webp" type="image/webp" />
+    <img src="/video/hero-poster.jpg" alt="" fetchpriority="high" decoding="async" />
+  </picture>
+  <video class="video" autoplay muted loop playsinline preload="auto" aria-hidden="true" data-hero-video>
+    <source media="(max-width: 767px) and (orientation: portrait)" src="/video/hero-mobile-av1.mp4" type='video/mp4; codecs="av01.0.08M.08"' />
+    <source media="(max-width: 767px) and (orientation: portrait)" src="/video/hero-mobile-h264.mp4" type="video/mp4" />
+    <source media="(min-width: 1921px)" src="/video/hero-2560-av1.mp4" type='video/mp4; codecs="av01.0.12M.08"' />
+    <source media="(min-width: 1921px)" src="/video/hero-2560-h264.mp4" type="video/mp4" />
+    <source src="/video/hero-1920-av1.mp4" type='video/mp4; codecs="av01.0.08M.08"' />
+    <source src="/video/hero-1920-h264.mp4" type="video/mp4" />
+  </video>
+  <div class="velo" aria-hidden="true"></div>
+
+  <div class="contenitore contenuto">
+    <p class="etichetta entra" style="--d:0">Trasporti eccezionali · Castellammare di Stabia</p>
+    <h1 id="hero-titolo">
+      <span class="riga entra" style="--d:1">Lamiere</span>
+      <span class="riga entra" style="--d:2"><em>fuori</em> sagoma.</span>
+      <span class="riga piccola entra" style="--d:3">In tutta Italia.</span>
+    </h1>
+    <p class="lead entra" style="--d:4">
+      Trasportiamo lamiere di grande formato su semirimorchi a piano inclinato: il carico viaggia bloccato, bilanciato e con l'ingombro ridotto al minimo.
+    </p>
+    <div class="azioni entra" style="--d:5">
+      <Pulsante href="/contatti">Richiedi un preventivo</Pulsante>
+      <Pulsante href="#piano-inclinato" variante="secondario">Come trasportiamo</Pulsante>
+    </div>
+  </div>
+
+  <div class="contenitore piede-hero">
+    <p class="etichetta coordinate">40°42′N · 14°29′E</p>
+    <a class="scorri etichetta" href="#piano-inclinato"><span class="linea" aria-hidden="true"></span>Scorri</a>
+    <button class="pausa etichetta" type="button" data-hero-pausa aria-pressed="false">
+      <span class="ic" aria-hidden="true"></span><span class="testo">Pausa video</span>
+    </button>
+  </div>
+</section>
+
+<script>
+  // Pulsante pausa (WCAG 2.2.2) e rispetto di "riduci movimento": il video parte fermo sul poster.
+  const video = document.querySelector<HTMLVideoElement>('[data-hero-video]');
+  const bottone = document.querySelector<HTMLButtonElement>('[data-hero-pausa]');
+  if (video && bottone) {
+    const testo = bottone.querySelector('.testo')!;
+    const imposta = (fermo: boolean) => {
+      fermo ? video.pause() : video.play().catch(() => {});
+      bottone.setAttribute('aria-pressed', String(fermo));
+      testo.textContent = fermo ? 'Avvia video' : 'Pausa video';
+    };
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) imposta(true);
+    bottone.addEventListener('click', () => imposta(!video.paused));
+    video.addEventListener('playing', () => video.classList.add('pronto'), { once: true });
+  }
+</script>
+
+<style>
+  .hero {
+    position: relative; min-height: 100svh; display: grid; grid-template-rows: 1fr auto;
+    overflow: hidden; isolation: isolate; background: var(--notte-950);
+  }
+  .poster, .video, .velo { position: absolute; inset: 0; z-index: -1; }
+  .poster img, .video { width: 100%; height: 100%; object-fit: cover; }
+  .video { opacity: 0; transition: opacity 1.2s var(--ease-out); }
+  .video.pronto { opacity: 1; }
+  /* velo: scurisce a sinistra e in basso per la leggibilita' del testo, lascia luminoso il camion */
+  .velo {
+    background:
+      linear-gradient(90deg, rgb(4 11 22 / 0.88) 0%, rgb(4 11 22 / 0.55) 38%, rgb(4 11 22 / 0) 68%),
+      linear-gradient(0deg, rgb(4 11 22 / 0.9) 0%, rgb(4 11 22 / 0) 38%),
+      linear-gradient(180deg, rgb(4 11 22 / 0.6) 0%, rgb(4 11 22 / 0) 22%);
+  }
+
+  .contenuto { align-self: end; display: grid; gap: 1.6rem; justify-items: start; padding-top: 8rem; }
+  h1 { font-size: var(--t-mega); line-height: 0.84; }
+  .riga { display: block; }
+  .riga em { font-style: normal; color: var(--giallo); display: inline-block; transform: skewX(-10deg); }
+  .piccola { font-size: 0.42em; line-height: 1.1; margin-top: 0.35em; color: var(--testo-tenue); }
+  .lead { max-width: 46ch; color: #c9d5e3; }
+  .azioni { display: flex; flex-wrap: wrap; gap: 1rem 1.25rem; }
+
+  .piede-hero { display: flex; align-items: center; gap: 2rem; padding: 2.5rem 0 2rem; }
+  .coordinate { margin: 0; }
+  .scorri { margin: 0 auto; display: flex; align-items: center; gap: 0.8rem; text-decoration: none; color: var(--testo); }
+  .linea { width: 1.5px; height: 36px; background: linear-gradient(var(--giallo), transparent); transform-origin: top; }
+  .pausa {
+    display: flex; align-items: center; gap: 0.6rem; background: none; border: 0; cursor: pointer; color: var(--testo-tenue); padding: 0.5rem 0;
+  }
+  .pausa:hover { color: var(--testo); }
+  .ic { width: 10px; height: 12px; border-inline: 3px solid currentColor; }
+  .pausa[aria-pressed='true'] .ic { border: 0; width: 0; height: 0; border-left: 10px solid currentColor; border-block: 6px solid transparent; }
+
+  /* ingresso orchestrato: le righe salgono una dopo l'altra */
+  @media (prefers-reduced-motion: no-preference) {
+    .entra { animation: sale 0.9s var(--ease-out) both; animation-delay: calc(var(--d) * 0.07s); }
+    .lead.entra, .azioni.entra { animation-name: scivola; }
+    .linea { animation: scende 2.2s var(--ease-in-out) infinite; }
+    /* il testo si allontana e sfuma mentre si scorre: il video resta protagonista */
+    @supports (animation-timeline: scroll()) {
+      .contenuto { animation-name: allontana; animation-timing-function: linear; animation-fill-mode: both; animation-timeline: scroll(root); animation-range: 0 90vh; }
+    }
+  }
+  @keyframes sale { from { opacity: 0; transform: translateY(40px); } }
+  @keyframes scivola { from { transform: translateY(28px); } }
+  @keyframes scende { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); } 100% { transform: scaleY(1); opacity: 0; } }
+  @keyframes allontana { to { opacity: 0; transform: translateY(-12vh); } }
+
+  @media (max-width: 767px) {
+    .velo {
+      background:
+        linear-gradient(0deg, rgb(4 11 22 / 0.95) 0%, rgb(4 11 22 / 0.7) 45%, rgb(4 11 22 / 0) 75%),
+        linear-gradient(180deg, rgb(4 11 22 / 0.6) 0%, rgb(4 11 22 / 0) 20%);
+    }
+    .coordinate { display: none; }
+    .scorri { margin-left: 0; }
+    .pausa { margin-left: auto; }
+  }
+</style>

@@ -1,0 +1,218 @@
+---
+// Schema tecnico animato allo scroll: vista posteriore del semirimorchio.
+// La lamiera parte orizzontale (sporge oltre la sagoma), poi si inclina sul piano e rientra.
+// Senza supporto per le animazioni scroll-driven (o con "riduci movimento") si vede lo stato finale, fermo.
+import Pulsante from '../Pulsante.astro';
+
+interface Props { conPulsante?: boolean }
+const { conPulsante = true } = Astro.props;
+
+const passi = [
+  { n: '01', titolo: 'La lamiera è più larga del mezzo', testo: 'Le lastre di grande formato superano la larghezza del semirimorchio: in piano sporgerebbero ai lati.' },
+  { n: '02', titolo: 'Il piano inclinato la solleva', testo: 'La lamiera viene appoggiata su un piano obliquo: l’ingombro laterale si riduce e il peso resta centrato sugli assi.' },
+  { n: '03', titolo: 'Viaggia bloccata e bilanciata', testo: 'Fissata con cinghie e sponde, arriva a destino senza deformazioni. Quando serve, in regime di trasporto eccezionale.' },
+];
+---
+
+<section id="piano-inclinato" data-anima="piano" class="scena tema-chiaro griglia-tecnica" aria-labelledby="pi-titolo">
+  <div class="palco contenitore">
+    <div class="testi">
+      <p class="etichetta riga-rotta"><span class="numero">01</span><span class="tratto" aria-hidden="true"></span>La specializzazione</p>
+      <h2 id="pi-titolo">Più larga del camion. <em>Eppure</em> passa.</h2>
+      <ol class="passi">
+        {passi.map((p, i) => (
+          <li class="passo" style={`--i:${i}`}>
+            <span class="etichetta">{p.n}</span>
+            <div>
+              <h3>{p.titolo}</h3>
+              <p>{p.testo}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+      {conPulsante && <Pulsante href="/specializzazione" variante="secondario">Scopri la tecnica</Pulsante>}
+    </div>
+
+    <figure class="schema" aria-label="Schema: vista posteriore del semirimorchio con la lamiera che passa dalla posizione orizzontale, oltre la sagoma, alla posizione inclinata, dentro la sagoma.">
+      <svg viewBox="0 0 800 560" role="img" aria-hidden="true">
+        <defs>
+          <linearGradient id="acciaio" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#c9d2db" /><stop offset="0.45" stop-color="#8d99a6" /><stop offset="1" stop-color="#5d6a78" />
+          </linearGradient>
+          <pattern id="tratteggio" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <line x1="0" y1="0" x2="0" y2="8" stroke="#e8540c" stroke-width="3" />
+          </pattern>
+        </defs>
+
+        <!-- sagoma limite -->
+        <g class="sagoma">
+          <line x1="190" y1="44" x2="190" y2="500" />
+          <line x1="610" y1="44" x2="610" y2="500" />
+          <line x1="150" y1="44" x2="650" y2="44" />
+          <g class="quota">
+            <line x1="196" y1="24" x2="604" y2="24" />
+            <path d="M196 24l10-5v10zM604 24l-10-5v10z" />
+            <text x="400" y="16" text-anchor="middle">SAGOMA LIMITE</text>
+          </g>
+        </g>
+
+        <!-- semirimorchio, vista posteriore -->
+        <g class="mezzo">
+          <rect x="200" y="378" width="400" height="26" rx="2" />
+          <rect x="232" y="404" width="336" height="14" />
+          <rect x="370" y="418" width="60" height="22" />
+          <rect x="206" y="418" width="36" height="82" rx="6" />
+          <rect x="246" y="418" width="36" height="82" rx="6" />
+          <rect x="518" y="418" width="36" height="82" rx="6" />
+          <rect x="558" y="418" width="36" height="82" rx="6" />
+          <rect x="292" y="424" width="30" height="10" class="luce" />
+          <rect x="478" y="424" width="30" height="10" class="luce" />
+        </g>
+        <line x1="60" y1="500" x2="740" y2="500" class="suolo" />
+
+        <!-- piano inclinato: struttura che compare durante il movimento -->
+        <g class="rastrelliera">
+          <line x1="205" y1="376" x2="572" y2="89" />
+          <line x1="300" y1="378" x2="300" y2="302" />
+          <line x1="420" y1="378" x2="420" y2="208" />
+          <line x1="540" y1="378" x2="540" y2="114" />
+          <line x1="300" y1="302" x2="420" y2="378" class="diag" />
+          <line x1="420" y1="208" x2="540" y2="378" class="diag" />
+        </g>
+
+        <!-- sporgenze fuori sagoma (solo nello stato iniziale) -->
+        <g class="sporgenze">
+          <rect x="150" y="358" width="40" height="14" fill="url(#tratteggio)" />
+          <rect x="610" y="358" width="40" height="14" fill="url(#tratteggio)" />
+        </g>
+
+        <!-- la lamiera: disegnata a partire dal perno (205,372); l'animazione la porta da orizzontale a inclinata -->
+        <g class="lamiera">
+          <rect x="205" y="358" width="500" height="14" fill="url(#acciaio)" />
+          <rect x="205" y="358" width="500" height="3" fill="#e6ebf0" opacity="0.8" />
+        </g>
+      </svg>
+      <figcaption class="stati etichetta" aria-hidden="true">
+        <span class="stato fuori">In piano: fuori sagoma</span>
+        <span class="stato dentro">Inclinata: ingombro ridotto</span>
+      </figcaption>
+      <button type="button" class="pausa-schema" data-pausa-schema aria-pressed="false"><span class="ic" aria-hidden="true"></span><span class="testo">Pausa animazione</span></button>
+    </figure>
+  </div>
+</section>
+
+<script>
+  // Telefono o browser senza animazioni legate allo scroll: l'animazione parte a tempo quando la sezione entra in vista.
+  for (const s of document.querySelectorAll<HTMLElement>('[data-anima="piano"]')) {
+    if (matchMedia('(min-width: 900px)').matches && CSS.supports('animation-timeline: view()')) continue;
+    s.classList.add('temporizzato');
+    new IntersectionObserver((voci, oss) => {
+      if (voci[0].isIntersecting) { s.classList.add('vista'); oss.disconnect(); }
+    }, { threshold: 0.4 }).observe(s.querySelector('figure')!);
+    const pausa = s.querySelector<HTMLButtonElement>('[data-pausa-schema]');
+    pausa?.addEventListener('click', () => {
+      const fermo = s.classList.toggle('fermo');
+      pausa.setAttribute('aria-pressed', String(fermo));
+      pausa.querySelector('.testo')!.textContent = fermo ? 'Riprendi animazione' : 'Pausa animazione';
+    });
+  }
+</script>
+
+<style>
+  .scena { position: relative; view-timeline-name: --scena; }
+  .palco { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(2rem, 5vw, 6rem); align-items: center; padding: var(--sezione) 0; }
+
+  .riga-rotta { display: flex; align-items: center; gap: 0.9rem; margin: 0 0 1.4rem; }
+  .numero { color: var(--accento); }
+  .tratto { width: 48px; height: 1.5px; background: currentColor; transform: skewY(-12deg); opacity: 0.6; }
+  h2 em { font-style: normal; color: var(--accento); }
+  .testi { display: grid; justify-items: start; }
+  .passi { list-style: none; margin: 2.5rem 0; padding: 0; display: grid; gap: 1.6rem; }
+  .passo { display: grid; grid-template-columns: 2.5rem 1fr; gap: 0.5rem; padding-left: 1rem; border-left: 2px solid var(--linea); }
+  .passo h3 { font-size: 1.35rem; margin-bottom: 0.4rem; }
+  .passo p { margin: 0; color: var(--testo-tenue); font-size: 0.98rem; }
+  .passo .etichetta { color: var(--accento); padding-top: 0.2rem; }
+
+  /* ----- schema SVG ----- */
+  .schema { margin: 0; }
+  svg { width: 100%; height: auto; overflow: visible; }
+  .sagoma line { stroke: var(--blu); stroke-width: 1.5; stroke-dasharray: 8 7; opacity: 0.55; }
+  .quota line { stroke: var(--blu); stroke-dasharray: none; opacity: 0.8; }
+  .quota path { fill: var(--blu); }
+  .quota text { font-family: var(--f-mono); font-size: 13px; letter-spacing: 0.14em; fill: var(--blu); }
+  .mezzo rect { fill: var(--notte-800); }
+  .mezzo .luce { fill: #e8540c; }
+  .suolo { stroke: var(--acciaio-400); stroke-width: 2; }
+  .rastrelliera line { stroke: #b3261e; stroke-width: 9; stroke-linecap: square; }
+  .rastrelliera .diag { stroke-width: 5; }
+
+  /* stato finale (anche fallback statico): lamiera inclinata di 38 gradi sul perno */
+  .lamiera { transform-box: view-box; transform-origin: 205px 372px; transform: rotate(-38deg); }
+  .sporgenze { opacity: 0; }
+  .rastrelliera { opacity: 1; }
+  .stati { position: relative; height: 1.5em; margin-top: 1rem; text-align: center; }
+  .schema { display: grid; }
+  .stato { position: absolute; inset: 0; }
+  .fuori { color: #c2410c; opacity: 0; }
+  .dentro { color: var(--blu); }
+
+  /* versione animata: la scena diventa alta e il palco resta fermo mentre si scorre */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) and (min-width: 900px) {
+      .scena { height: 280vh; }
+      .palco { position: sticky; top: 0; min-height: 100vh; padding: 6rem 0 3rem; }
+
+      .lamiera, .sporgenze, .rastrelliera, .fuori, .dentro, .passo {
+        animation-timeline: --scena; animation-fill-mode: both; animation-timing-function: linear;
+      }
+      .lamiera { animation-name: inclina; animation-range: contain 18% contain 62%; }
+      .sporgenze { animation-name: sparisce; animation-range: contain 18% contain 38%; }
+      .rastrelliera { animation-name: compare; animation-range: contain 22% contain 55%; }
+      .fuori { animation-name: sparisce; animation-range: contain 30% contain 42%; }
+      .dentro { animation-name: compare; animation-range: contain 52% contain 64%; }
+      .passo { animation-name: evidenzia; }
+      .passo:nth-child(1) { animation-range: contain 0% contain 34%; }
+      .passo:nth-child(2) { animation-range: contain 34% contain 67%; }
+      .passo:nth-child(3) { animation-range: contain 67% contain 100%; }
+    }
+  }
+  /* versione a tempo (telefono / browser senza scroll-driven): ciclo lento in loop, con pausa */
+  .pausa-schema { display: none; }
+  @media (prefers-reduced-motion: no-preference) {
+    .temporizzato :is(.lamiera, .sporgenze, .rastrelliera, .fuori, .dentro) {
+      animation-duration: 5.52s; animation-iteration-count: infinite; animation-timing-function: var(--ease-in-out);
+      animation-fill-mode: both; animation-play-state: paused;
+    }
+    .temporizzato .lamiera { animation-name: ciclo-lamiera; }
+    .temporizzato .sporgenze { animation-name: ciclo-sporgenze; }
+    .temporizzato .rastrelliera { animation-name: ciclo-rastrelliera; }
+    .temporizzato .fuori { animation-name: ciclo-fuori; }
+    .temporizzato .dentro { animation-name: ciclo-dentro; }
+    .temporizzato.vista:not(.fermo) :is(.lamiera, .sporgenze, .rastrelliera, .fuori, .dentro) { animation-play-state: running; }
+    .temporizzato .pausa-schema {
+      display: inline-flex; align-items: center; gap: 0.5rem; margin: 0.8rem auto 0; background: none; cursor: pointer;
+      border: 1px solid var(--linea); color: var(--blu); padding: 0.55rem 0.9rem;
+      font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+    }
+    .pausa-schema .ic { width: 9px; height: 11px; border-inline: 3px solid currentColor; }
+    .fermo .pausa-schema .ic { border: 0; width: 0; height: 0; border-left: 9px solid currentColor; border-block: 5.5px solid transparent; }
+  }
+  /* 5,5 s: in piano (fuori sagoma) -> si inclina (2,2 s) -> resta inclinata -> torna in piano (1,3 s) */
+  @keyframes ciclo-lamiera { 0%, 10.9% { transform: translateX(-55px) rotate(0deg); } 51.4%, 73.2% { transform: translateX(0) rotate(-38deg); } 96.4%, 100% { transform: translateX(-55px) rotate(0deg); } }
+  @keyframes ciclo-sporgenze { 0%, 10.9% { opacity: 1; } 25.4%, 81.9% { opacity: 0; } 94.9%, 100% { opacity: 1; } }
+  @keyframes ciclo-rastrelliera { 0%, 13.8% { opacity: 0; } 39.9%, 79% { opacity: 1; } 94.9%, 100% { opacity: 0; } }
+  @keyframes ciclo-fuori { 0%, 13.8% { opacity: 1; } 22.5%, 84.8% { opacity: 0; } 94.9%, 100% { opacity: 1; } }
+  @keyframes ciclo-dentro { 0%, 48.6% { opacity: 0; } 53.9%, 76.1% { opacity: 1; } 84.8%, 100% { opacity: 0; } }
+  @keyframes inclina { from { transform: translateX(-55px) rotate(0deg); } to { transform: translateX(0) rotate(-38deg); } }
+  @keyframes sparisce { from { opacity: 1; } to { opacity: 0; } }
+  @keyframes compare { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes evidenzia {
+    0%, 100% { opacity: 0.35; border-left-color: var(--linea); }
+    15%, 85% { opacity: 1; border-left-color: var(--blu); }
+  }
+
+  @media (max-width: 899px) {
+    .palco { grid-template-columns: 1fr; }
+    .schema { order: -1; }
+  }
+</style>

@@ -1,0 +1,231 @@
+---
+// Home cinematografica.
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Hero from '../components/home/Hero.astro';
+import Intro from '../components/home/Intro.astro';
+import Qualifica from '../components/home/Qualifica.astro';
+import PianoInclinato from '../components/home/PianoInclinato.astro';
+import GalleriaFlotta from '../components/home/GalleriaFlotta.astro';
+import MappaRotte from '../components/home/MappaRotte.astro';
+import Nastro from '../components/Nastro.astro';
+import IntestazioneSezione from '../components/IntestazioneSezione.astro';
+import Scheda from '../components/Scheda.astro';
+import Pulsante from '../components/Pulsante.astro';
+import IconaWhatsapp from '../components/icone/Whatsapp.astro';
+import IconaTelefono from '../components/icone/Telefono.astro';
+import DatiStrutturati from '../components/DatiStrutturati.astro';
+import LogoFincantieri from '../components/LogoFincantieri.astro';
+import { SITO, whatsappLink, TESTO_WHATSAPP_PREVENTIVO } from '../config/sito';
+
+import fotoAcciaierie from '../assets/foto/lamiere-inclinate-590-r450-pioggia.jpg';
+import fotoCarpenterie from '../assets/foto/lamiere-fuori-sagoma-laterale.jpg';
+import fotoNavali from '../assets/foto/traghetto-lamiere-inclinate.jpg';
+import fotoImpianti from '../assets/foto/scania-autogru-cantiere.jpg';
+import fotoAncora from '../assets/foto/ancora-navale-sollevamento.jpg';
+import fotoBarche from '../assets/foto/barche-legno-scania.jpg';
+import fotoGru from '../assets/foto/gru-torre-centro-storico.jpg';
+import fotoBobine from '../assets/foto/bobine-cavo-r450.jpg';
+import fotoAutisti from '../assets/foto/flotta-faito-scania-590-500.jpg';
+
+const settori = [
+  { titolo: 'Acciaierie e centri servizi', foto: fotoAcciaierie, alt: 'Scania con semirimorchi a piano inclinato carichi, su strada bagnata', testo: 'Lastre e laminati di grande formato, dal laminatoio al cliente finale.' },
+  { titolo: 'Carpenterie metalliche', foto: fotoCarpenterie, alt: 'Scania con lamiere fuori sagoma legate sul semirimorchio', testo: 'Lamiere per strutture, ponti e capannoni, consegnate direttamente in officina o in cantiere.' },
+  { titolo: 'Cantieri navali', foto: fotoNavali, alt: 'Scania con semirimorchio a piano inclinato nella stiva di un traghetto', testo: 'Lamiere per scafi e sovrastrutture, anche verso le isole via traghetto.' },
+  { titolo: 'Impianti e macchinari', foto: fotoImpianti, alt: 'Scania Traspogru con semirimorchio in cantiere mentre un’autogrù scarica il materiale', testo: 'Componenti e lamiere per costruttori di impianti industriali e macchine.' },
+];
+
+const lavori = [
+  { foto: fotoAncora, titolo: 'Un’ancora navale', luogo: 'Per Fincantieri', alt: 'Ancora navale di grandi dimensioni sollevata sul pianale Traspogru', classe: 'alta' },
+  { foto: fotoBarche, titolo: 'Barche storiche in legno', luogo: 'Trasporto conservativo', alt: 'Tre barche in legno caricate sul semirimorchio dello Scania Traspogru', classe: 'larga' },
+  { foto: fotoGru, titolo: 'Una gru a torre', luogo: 'Centro storico', alt: 'Scania Traspogru in una via del centro storico mentre una gru scarica un tronco di gru a torre', classe: 'alta' },
+  { foto: fotoBobine, titolo: 'Bobine di cavo', luogo: 'Cantiere', alt: 'Scania R450 arancione con bobine di cavo legate sul pianale', classe: 'larga' },
+];
+---
+
+<Base
+  titolo="Traspogru"
+  descrizione="Trasporto di lamiere fuori sagoma su semirimorchi a piano inclinato, in tutta Italia. Sede a Castellammare di Stabia. Preventivi su WhatsApp e al telefono."
+  headerSuHero
+>
+  <DatiStrutturati slot="head" tipo="azienda" />
+  <Intro />
+  <Hero />
+  <Qualifica />
+  <PianoInclinato />
+  <Nastro />
+
+  <!-- 02 Settori -->
+  <section class="settori tema-scuro taglio-alto" aria-labelledby="settori-titolo">
+    <div class="contenitore">
+      <div class="testa-sezione">
+        <IntestazioneSezione id="settori-titolo" numero="02" etichetta="Settori" titolo="Per chi lavora <em>con</em> l’acciaio" />
+        <p class="lead appare">Dal laminatoio al cantiere navale: portiamo la lamiera dove serve, pronta per essere lavorata.</p>
+      </div>
+      <div class="griglia-settori">
+        {settori.map((s, i) => (
+          <Scheda titolo={s.titolo} indice={`Settore ${String(i + 1).padStart(2, '0')}`} href={`/settori#settore-${i + 1}`} foto={s.foto} alt={s.alt}>
+            <p>{s.testo}</p>
+          </Scheda>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <MappaRotte />
+
+  <GalleriaFlotta />
+
+  <!-- 05 Lavori realizzati -->
+  <section class="lavori tema-chiaro taglio-alto" aria-labelledby="lavori-titolo">
+    <div class="contenitore">
+      <div class="testa-sezione">
+        <IntestazioneSezione id="lavori-titolo" numero="05" etichetta="Lavori realizzati" titolo="Anche quello che <em>non</em> è una lamiera." />
+        <p class="lead appare">La specialità sono le lamiere. L’esperienza con i carichi fuori misura ci porta anche altrove.</p>
+      </div>
+      <div class="mosaico">
+        {lavori.map((l) => (
+          <figure class:list={['lavoro appare', l.classe]}>
+            <Image src={l.foto} alt={l.alt} widths={[480, 800, 1200, 1600]} sizes="(max-width: 900px) 100vw, 50vw" />
+            <figcaption>
+              {l.luogo === 'Per Fincantieri'
+                ? <span class="etichetta per-fc">Per <LogoFincantieri altezza="0.95em" /></span>
+                : <span class="etichetta">{l.luogo}</span>}
+              <span class="titolo-lavoro">{l.titolo}</span>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+      <div class="coda"><Pulsante href="/lavori" variante="secondario">Tutti i lavori</Pulsante></div>
+    </div>
+  </section>
+
+  <!-- 06 Lavora con noi -->
+  <section class="autisti tema-scuro" aria-labelledby="autisti-titolo">
+    <Image class="sfondo-autisti" src={fotoAutisti} alt="" widths={[800, 1400, 2000]} sizes="100vw" />
+    <div class="contenitore interno">
+      <p class="etichetta riga-rotta"><span class="numero">06</span><span class="tratto" aria-hidden="true"></span>Lavora con noi</p>
+      <h2 id="autisti-titolo">Guida un camion <em>di cui</em> andare fiero.</h2>
+      <p class="lead">Cerchiamo autisti con patente CE e CQC merci. Mezzi recenti e curati, lavoro serio, una squadra che ci tiene.</p>
+      <div class="azioni">
+        <Pulsante href="/lavora-con-noi">Candidati</Pulsante>
+        <Pulsante href={whatsappLink('Buongiorno, vorrei candidarmi come autista. Patente: … CQC: … Esperienza: …')} variante="testo" esterno>Scrivici su WhatsApp</Pulsante>
+      </div>
+    </div>
+  </section>
+
+  <Nastro inverso voci={['Richiedi un preventivo', 'Risposta rapida', 'WhatsApp', '349 050 0663', 'Castellammare di Stabia']} />
+
+  <!-- 07 Contatti -->
+  <section class="contatti tema-chiaro griglia-tecnica" aria-labelledby="contatti-titolo">
+    <div class="contenitore griglia-contatti">
+      <div>
+        <IntestazioneSezione id="contatti-titolo" numero="07" etichetta="Preventivo" titolo="Hai una lamiera <em>da spostare</em>?" />
+        <p class="lead appare">Mandaci misure, peso, partenza e arrivo: ti rispondiamo con una proposta su misura. Anche una foto o un disegno vanno benissimo.</p>
+      </div>
+      <div class="canali appare">
+        <a class="canale wa" href={whatsappLink(TESTO_WHATSAPP_PREVENTIVO)} target="_blank" rel="noopener">
+          <IconaWhatsapp />
+          <span><span class="etichetta">Il più rapido</span><strong>WhatsApp</strong></span>
+          <span class="freccia" aria-hidden="true">→</span>
+        </a>
+        <a class="canale tel" href={`tel:${SITO.telefono.replace(/\s/g, '')}`}>
+          <IconaTelefono />
+          <span><span class="etichetta">Chiamaci</span><strong>{SITO.telefonoVisibile}</strong></span>
+          <span class="freccia" aria-hidden="true">→</span>
+        </a>
+        <a class="canale modulo" href="/contatti">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v16H4zM8 9h8M8 13h8M8 17h5" /></svg>
+          <span><span class="etichetta">Guidato</span><strong>Modulo di preventivo</strong></span>
+          <span class="freccia" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .testa-sezione { display: grid; grid-template-columns: 1.2fr 1fr; gap: 2rem 4rem; align-items: end; margin-bottom: 1rem; }
+  .testa-sezione .lead { margin-bottom: clamp(2.5rem, 2rem + 2vw, 4rem); }
+
+  /* Settori */
+  .settori { padding-bottom: var(--sezione); }
+  .griglia-settori { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+  .griglia-settori > :global(*:nth-child(even)) { margin-top: 3rem; }
+
+  /* Lavori: mosaico sfalsato */
+  .lavori { padding-bottom: var(--sezione); }
+  .mosaico { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.25rem; align-items: start; }
+  .lavoro { margin: 0; position: relative; overflow: hidden; }
+  .lavoro:nth-child(1) { grid-column: 1 / span 5; }
+  .lavoro:nth-child(2) { grid-column: 6 / span 7; margin-top: 5rem; }
+  .lavoro:nth-child(3) { grid-column: 1 / span 5; }
+  .lavoro:nth-child(4) { grid-column: 6 / span 6; margin-top: 2rem; }
+  .lavoro :global(img) { width: 100%; height: auto; object-fit: cover; transition: transform 1s var(--ease-out); }
+  .alta :global(img) { aspect-ratio: 1 / 1; }
+  .larga :global(img) { aspect-ratio: 16 / 10; }
+  .lavoro:hover :global(img) { transform: scale(1.04); }
+  .lavoro figcaption {
+    position: absolute; left: 0; bottom: 0; right: 0; display: grid; gap: 0.3rem;
+    padding: 3rem 1.4rem 1.2rem; color: #fff;
+    background: linear-gradient(0deg, rgb(4 11 22 / 0.85), transparent);
+  }
+  .lavoro figcaption .etichetta { color: var(--giallo); }
+  .per-fc { display: inline-flex; align-items: center; gap: 0.5em; }
+  .titolo-lavoro { font-family: var(--f-display); font-weight: 800; text-transform: uppercase; font-size: clamp(1.5rem, 1.1rem + 1.2vw, 2.2rem); line-height: 1; }
+  .coda { margin-top: 3rem; display: flex; justify-content: flex-end; }
+
+  /* Lavora con noi: banda a tutta larghezza, foto in dissolvenza a destra */
+  .autisti { position: relative; overflow: hidden; isolation: isolate; padding: var(--sezione) 0; background: var(--notte-950); }
+  .autisti :global(.sfondo-autisti) {
+    position: absolute; inset: 0 0 0 30%; width: 70%; height: 100%; object-fit: cover; z-index: -1;
+    mask-image: linear-gradient(90deg, transparent, #000 45%);
+    opacity: 0.75;
+  }
+  .interno { display: grid; gap: 1.5rem; justify-items: start; }
+  .interno h2 { max-width: 11em; }
+  .interno h2 em { font-style: normal; color: var(--giallo); }
+  .interno .lead { max-width: 40ch; }
+  .riga-rotta { display: flex; align-items: center; gap: 0.9rem; margin: 0; }
+  .numero { color: var(--accento); }
+  .tratto { width: 48px; height: 1.5px; background: currentColor; transform: skewY(-12deg); opacity: 0.6; }
+  .azioni { display: flex; flex-wrap: wrap; gap: 1rem 1.5rem; align-items: center; }
+
+  /* Contatti */
+  .contatti { padding: var(--sezione) 0; }
+  .griglia-contatti { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem 5rem; align-items: center; }
+  .canali { display: grid; gap: 1rem; }
+  .canale {
+    display: grid; grid-template-columns: 56px 1fr auto; align-items: center; gap: 1.2rem;
+    padding: 1.3rem 1.5rem; text-decoration: none; color: var(--inchiostro);
+    background: #fff; border: 1px solid var(--linea);
+    clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 0 100%);
+    transition: transform 0.35s var(--ease-out), background 0.3s;
+  }
+  .canale:hover { transform: translateX(8px); }
+  .canale > :global(svg) { width: 34px; height: 34px; justify-self: center; }
+  .canale strong { display: block; font-family: var(--f-display); font-size: 1.9rem; text-transform: uppercase; line-height: 1; margin-top: 0.25rem; }
+  .canale .freccia { font-size: 1.5rem; transition: transform 0.3s var(--ease-out); }
+  .canale:hover .freccia { transform: translateX(4px); }
+  .wa > :global(svg) { color: #128c4a; }
+  .tel { background: var(--giallo); border-color: var(--giallo-ombra); }
+  .tel .etichetta { color: var(--inchiostro); }
+  .modulo > :global(svg) { color: var(--blu); }
+
+  @media (max-width: 1100px) {
+    .griglia-settori { grid-template-columns: repeat(2, 1fr); }
+    .griglia-settori > :global(*:nth-child(even)) { margin-top: 2rem; }
+  }
+  @media (max-width: 899px) {
+    .testa-sezione, .griglia-contatti { grid-template-columns: 1fr; }
+    .testa-sezione .lead { margin-bottom: 2.5rem; }
+    .mosaico { grid-template-columns: 1fr; }
+    .lavoro:nth-child(n) { grid-column: auto; margin-top: 0; }
+    .autisti :global(.sfondo-autisti) { inset: 0; width: 100%; opacity: 0.35; mask-image: none; }
+  }
+  @media (max-width: 560px) {
+    .griglia-settori { grid-template-columns: 1fr; }
+    .griglia-settori > :global(*:nth-child(even)) { margin-top: 0; }
+    .canale strong { font-size: 1.5rem; }
+  }
+</style>

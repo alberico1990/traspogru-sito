@@ -1,0 +1,55 @@
+---
+// Dati strutturati schema.org (JSON-LD) per Google e per gli assistenti AI.
+import { SITO } from '../config/sito';
+import { FAQ } from '../data/faq';
+
+interface Props { tipo: 'azienda' | 'faq' | 'lavoro' }
+const { tipo } = Astro.props;
+const i = SITO.indirizzo;
+
+const azienda = {
+  '@type': 'LocalBusiness',
+  '@id': `${SITO.dominio}/#azienda`,
+  name: SITO.ragioneSociale,
+  alternateName: SITO.marchio,
+  description: 'Trasporto di lamiere fuori sagoma su semirimorchi a piano inclinato, anche in regime di trasporto eccezionale, in tutta Italia.',
+  url: SITO.dominio,
+  logo: `${SITO.dominio}/icona-app-512.png`,
+  image: `${SITO.dominio}/og.jpg`,
+  telephone: SITO.telefono,
+  email: SITO.email,
+  vatID: `IT${SITO.legale.piva}`,
+  taxID: SITO.legale.piva,
+  address: { '@type': 'PostalAddress', streetAddress: i.via, postalCode: i.cap, addressLocality: i.citta, addressRegion: i.provincia, addressCountry: 'IT' },
+  geo: { '@type': 'GeoCoordinates', latitude: i.lat, longitude: i.lng },
+  areaServed: { '@type': 'Country', name: 'Italia' },
+  sameAs: [SITO.facebook],
+  makesOffer: [
+    { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Trasporto lamiere fuori sagoma su piano inclinato' } },
+    { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Trasporti eccezionali' } },
+  ],
+};
+
+const dati = {
+  azienda: { '@context': 'https://schema.org', ...azienda },
+  faq: {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: FAQ.map((f) => ({ '@type': 'Question', name: f.domanda, acceptedAnswer: { '@type': 'Answer', text: f.risposta } })),
+  },
+  lavoro: {
+    '@context': 'https://schema.org',
+    '@type': 'JobPosting',
+    title: 'Autista patente CE con CQC merci',
+    description: '<p>Traspogru cerca autisti con patente CE e Carta di Qualificazione del Conducente (CQC) merci per il trasporto di lamiere su semirimorchi a piano inclinato, in tutta Italia. Mezzi Scania e DAF recenti e curati.</p>',
+    datePosted: '2026-09-22',
+    validThrough: '2027-03-31',
+    employmentType: 'FULL_TIME',
+    hiringOrganization: { '@type': 'Organization', name: SITO.ragioneSociale, sameAs: SITO.dominio, logo: `${SITO.dominio}/icona-app-512.png` },
+    jobLocation: { '@type': 'Place', address: { '@type': 'PostalAddress', streetAddress: i.via, postalCode: i.cap, addressLocality: i.citta, addressRegion: i.provincia, addressCountry: 'IT' } },
+    qualifications: 'Patente CE, CQC merci in corso di validità',
+  },
+}[tipo];
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(dati)} />

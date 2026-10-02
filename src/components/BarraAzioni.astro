@@ -1,0 +1,53 @@
+---
+import { SITO, whatsappLink, TESTO_WHATSAPP_PREVENTIVO } from '../config/sito';
+import IconaWhatsapp from './icone/Whatsapp.astro';
+import IconaTelefono from './icone/Telefono.astro';
+---
+
+<!-- Telefono: barra fissa in basso con due azioni. Desktop: pulsante WhatsApp flottante. -->
+<div class="barra" role="region" aria-label="Contatto rapido">
+  <a class="az wa" href={whatsappLink(TESTO_WHATSAPP_PREVENTIVO)} target="_blank" rel="noopener">
+    <IconaWhatsapp /><span>WhatsApp</span>
+  </a>
+  <a class="az tel" href={`tel:${SITO.telefono.replace(/\s/g, '')}`}>
+    <IconaTelefono /><span>Chiama</span>
+  </a>
+</div>
+
+<style>
+  .barra {
+    position: fixed; z-index: 40; left: 0; right: 0; bottom: 0;
+    display: grid; grid-template-columns: 1fr 1fr;
+    padding-bottom: env(safe-area-inset-bottom);
+    background: var(--notte-950);
+    border-top: 1px solid rgb(90 182 214 / 0.25);
+  }
+  .az {
+    display: flex; align-items: center; justify-content: center; gap: 0.6rem; min-height: 58px;
+    font-family: var(--f-mono); font-size: 0.8rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
+    text-decoration: none; color: #fff;
+  }
+  .az :global(svg) { width: 22px; height: 22px; }
+  .wa { background: #0f7a40; }
+  .tel { color: var(--inchiostro); background: var(--giallo); }
+
+  /* spazio in fondo alla pagina perche' la barra non copra il footer */
+  :global(body) { padding-bottom: calc(58px + env(safe-area-inset-bottom)); }
+
+  @media (min-width: 900px) {
+    :global(body) { padding-bottom: 0; }
+    .barra {
+      left: auto; right: 1.5rem; bottom: 1.5rem; display: block;
+      background: none; border: 0; padding: 0;
+    }
+    .tel { display: none; }
+    .wa {
+      width: 64px; height: 64px; min-height: 0; padding: 0; border-radius: 50%;
+      box-shadow: 0 10px 30px -6px rgb(0 0 0 / 0.45);
+      transition: transform 0.3s var(--ease-out);
+    }
+    .wa:hover { transform: scale(1.07); }
+    .wa :global(svg) { width: 30px; height: 30px; }
+    .wa span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  }
+</style>

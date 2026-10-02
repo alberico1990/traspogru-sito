@@ -1,0 +1,52 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  titolo: string;
+  indice?: string;
+  href?: string;
+  foto?: ImageMetadata;
+  alt?: string;
+}
+const { titolo, indice, href, foto, alt = '' } = Astro.props;
+const Tag = href ? 'a' : 'article';
+---
+
+<Tag class="scheda appare" href={href}>
+  {foto && (
+    <div class="foto">
+      <Image src={foto} alt={alt} widths={[480, 800, 1200]} sizes="(max-width: 700px) 100vw, 33vw" />
+    </div>
+  )}
+  <div class="corpo">
+    {indice && <span class="etichetta">{indice}</span>}
+    <h3>{titolo}</h3>
+    <div class="testo"><slot /></div>
+    {href && <span class="vai etichetta" aria-hidden="true">Scopri →</span>}
+  </div>
+</Tag>
+
+<style>
+  .scheda {
+    position: relative; display: flex; flex-direction: column; text-decoration: none; color: inherit;
+    background: color-mix(in srgb, var(--fondo), var(--testo) 4%);
+    border: 1px solid var(--linea);
+  }
+  /* angolo tagliato in alto a destra: richiamo della lamiera */
+  .scheda { clip-path: polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 0 100%); }
+  .foto { overflow: hidden; aspect-ratio: 4 / 3; }
+  .foto :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s var(--ease-out); }
+  a.scheda:hover .foto :global(img) { transform: scale(1.05); }
+  .corpo { display: grid; gap: 0.7rem; padding: 1.6rem 1.6rem 1.8rem; }
+  .corpo .etichetta { color: var(--accento); }
+  .testo { color: var(--testo-tenue); }
+  .testo :global(p) { margin: 0; }
+  .vai { margin-top: 0.4rem; color: var(--testo); transition: transform 0.3s var(--ease-out); }
+  a.scheda:hover .vai { transform: translateX(6px); color: var(--accento); }
+  a.scheda::after {
+    content: ''; position: absolute; left: 0; bottom: 0; height: 3px; width: 100%;
+    background: var(--giallo); transform: scaleX(0); transform-origin: left; transition: transform 0.5s var(--ease-out);
+  }
+  a.scheda:hover::after { transform: scaleX(1); }
+</style>

@@ -1,0 +1,56 @@
+---
+// Apertura delle pagine interne: fascia scura con titolo e, se c'e', foto sfumata a destra.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  etichetta: string;
+  titolo: string;
+  sottotitolo: string;
+  foto?: ImageMetadata;
+  alt?: string;
+}
+const { etichetta, titolo, sottotitolo, foto, alt = '' } = Astro.props;
+---
+
+<section class="apertura tema-scuro taglio-basso">
+  {foto && <Image class="foto" src={foto} alt={alt} widths={[480, 640, 960, 1400, 2000]} sizes="(max-width: 899px) 55vw, 60vw" quality={60} loading="eager" fetchpriority="high" />}
+  <div class="contenitore interno">
+    <nav aria-label="Percorso" class="percorso etichetta"><a href="/" class="indietro"><span aria-hidden="true">←</span> Home</a><span aria-hidden="true">/</span><span aria-current="page">{etichetta}</span></nav>
+    <h1 set:html={titolo} />
+    <p class="lead">{sottotitolo}</p>
+    <slot />
+  </div>
+</section>
+
+<style>
+  .apertura {
+    position: relative; overflow: hidden; isolation: isolate;
+    min-height: min(78vh, 760px); display: grid; align-items: end;
+    padding-top: 9rem;
+    background: radial-gradient(ellipse at 15% 100%, rgb(0 57 116 / 0.6), transparent 60%), var(--notte-950);
+  }
+  .apertura :global(.foto) {
+    position: absolute; top: 0; right: 0; width: 62%; height: 100%; object-fit: cover; z-index: -1;
+    mask-image: linear-gradient(90deg, transparent 0%, #000 50%);
+    opacity: 0.85;
+  }
+  .interno { display: grid; gap: 1.5rem; justify-items: start; }
+  .percorso { display: flex; gap: 0.6rem; }
+  .percorso a { text-decoration: none; }
+  .percorso a:hover { color: var(--giallo); }
+  .indietro { color: var(--testo); border-bottom: 1px solid var(--giallo); padding-bottom: 1px; }
+  h1 { max-width: 11em; }
+  h1 :global(em) { font-style: normal; color: var(--giallo); display: inline-block; transform: skewX(-8deg); }
+  .lead { max-width: 48ch; color: #c9d5e3; }
+  @media (prefers-reduced-motion: no-preference) {
+    .interno > :global(*) { animation: sale 0.9s var(--ease-out) both; }
+    .interno > :global(*:nth-child(2)) { animation-delay: 0.08s; }
+    .interno > :global(*:nth-child(3)) { animation-delay: 0.16s; }
+    .interno > :global(*:nth-child(4)) { animation-delay: 0.24s; }
+  }
+  @keyframes sale { from { opacity: 0; transform: translateY(32px); } }
+  @media (max-width: 899px) {
+    .apertura :global(.foto) { width: 100%; opacity: 0.35; mask-image: linear-gradient(0deg, transparent, #000 70%); }
+  }
+</style>

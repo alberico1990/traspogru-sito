@@ -1,0 +1,23 @@
+---
+// Cookie policy del sito.
+import Testo from '../layouts/Testo.astro';
+import { SITO } from '../config/sito';
+---
+
+<Testo titolo="Cookie policy" descrizione="Cookie policy del sito Traspogru: nessun cookie di profilazione, nessuna statistica, nessun servizio di terze parti incorporato." etichetta="Documenti legali" aggiornato="22 settembre 2026">
+  <h2>In breve</h2>
+  <p>Questo sito <strong>non usa cookie di profilazione né cookie di terze parti</strong> e non mostra pubblicità. Per questo non trovi un banner che ti chiede il consenso.</p>
+
+  <h2>Cosa usiamo</h2>
+  <ul>
+    <li><strong>Nessuna statistica</strong>: non misuriamo le visite e non installiamo strumenti di analisi.</li>
+    <li><strong>Nessuna mappa o video incorporati da terzi</strong>: i link a Google Maps, Apple Mappe, Waze, WhatsApp e Facebook si aprono solo se li clicchi, e da quel momento valgono le informative di quei servizi.</li>
+    <li><strong>Caratteri tipografici</strong> ospitati sul nostro server: nessuna richiesta verso servizi esterni.</li>
+  </ul>
+
+  <h2>Come gestire i cookie</h2>
+  <p>Puoi comunque cancellare o bloccare i cookie dalle impostazioni del tuo browser. Il sito continuerà a funzionare normalmente.</p>
+
+  <h2>Contatti</h2>
+  <p>Per domande scrivi a <a href={`mailto:${SITO.email}`}>{SITO.email}</a>. Informazioni sul trattamento dei dati sono nella <a href="/privacy">informativa privacy</a>.</p>
+</Testo>

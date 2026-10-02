@@ -1,0 +1,161 @@
+---
+// "In tutta Italia": rotte che partono da Castellammare e si disegnano a tempo appena la mappa entra in vista.
+// Contorno da Natural Earth 1:50m, generato da sorgenti/mappa/genera_mappa.py. Senza supporto o con
+// "riduci movimento" la mappa e' gia' completa e ferma.
+import mappa from '../../data/mappa.json';
+import Pulsante from '../Pulsante.astro';
+
+const origine = mappa.citta.find((c) => c.tipo === 'origine')!;
+const destinazioni = mappa.citta.filter((c) => c.tipo !== 'origine');
+
+// curva quadratica con il punto di controllo spostato di lato: le rotte "si aprono" a ventaglio
+function curva(x: number, y: number, via?: [number, number]) {
+  const [ox, oy] = [origine.x, origine.y];
+  if (via) return `M${ox} ${oy}Q${via[0]} ${via[1]} ${x} ${y}`;
+  const mx = (ox + x) / 2, my = (oy + y) / 2;
+  const dx = x - ox, dy = y - oy, l = Math.hypot(dx, dy);
+  const piega = Math.min(60, l * 0.22);
+  return `M${ox} ${oy}Q${(mx - (dy / l) * piega).toFixed(1)} ${(my + (dx / l) * piega).toFixed(1)} ${x} ${y}`;
+}
+// le rotte via mare passano per il Tirreno, non sopra la terraferma
+const viaMare: Record<string, [number, number]> = { Palermo: [300, 470], Cagliari: [250, 380] };
+
+const rotte = destinazioni
+  .map((c) => ({ ...c, d: curva(c.x, c.y, viaMare[c.nome]), dist: Math.hypot(c.x - origine.x, c.y - origine.y) }))
+  .sort((a, b) => a.dist - b.dist)
+  .map((r, i) => ({ ...r, i }));
+// etichette a sinistra per le citta' vicine al bordo destro della mappa
+const aSinistra = new Set(['Taranto', 'Bari', 'Monfalcone']);
+---
+
+<section data-anima="mappa" class="rotte tema-chiaro griglia-tecnica taglio-alto" aria-labelledby="rotte-titolo">
+  <div class="contenitore riga">
+    <div class="testo">
+      <p class="etichetta riga-rotta"><span class="numero">03</span><span class="tratto" aria-hidden="true"></span>In tutta Italia</p>
+      <h2 id="rotte-titolo">Da Castellammare <em>a</em> tutta Italia.</h2>
+      <p class="lead">Partiamo dal Golfo di Napoli e raggiungiamo i poli dell’acciaio, della carpenteria e della cantieristica di tutto il Paese. Per Sicilia e Sardegna imbarchiamo i nostri mezzi sui traghetti.</p>
+      <ul class="legenda">
+        <li><span class="segno strada" aria-hidden="true"></span>Su strada, da nord a sud</li>
+        <li><span class="segno mare" aria-hidden="true"></span>Via traghetto verso le isole</li>
+      </ul>
+      <Pulsante href="/contatti" variante="secondario">Preventivo per la tua tratta</Pulsante>
+    </div>
+
+    <figure class="carta" aria-label="Mappa dell’Italia con le rotte che partono da Castellammare di Stabia verso le principali città industriali e, via traghetto, verso Palermo e Cagliari.">
+      <svg viewBox={mappa.viewBox} aria-hidden="true">
+        <path class="terra" d={mappa.contorno} />
+        {rotte.map((r) => (
+          <g class:list={['rotta', r.tipo]} style={`--i:${r.i}`}>
+            <path class="scia" d={r.d} pathLength="1" />
+            <path class="linea" d={r.d} pathLength="1" />
+            <path class="flusso" d={r.d} pathLength="1" />
+          </g>
+        ))}
+        {rotte.map((r) => (
+          <g class="citta" style={`--i:${r.i}`}>
+            <circle cx={r.x} cy={r.y} r="4.5" class="punto" />
+            <circle cx={r.x} cy={r.y} r="4.5" class="onda" />
+            <text x={aSinistra.has(r.nome) ? r.x - 9 : r.x + 9} y={r.y + 4} text-anchor={aSinistra.has(r.nome) ? 'end' : 'start'}>{r.nome}</text>
+          </g>
+        ))}
+        <g class="partenza">
+          <circle cx={origine.x} cy={origine.y} r="18" class="alone" />
+          <circle cx={origine.x} cy={origine.y} r="8" class="centro" />
+          <path d={`M${origine.x} ${origine.y - 14}L${origine.x + 3} ${origine.y}L${origine.x} ${origine.y + 14}L${origine.x - 3} ${origine.y}Z`} class="ago" />
+          <text x={origine.x - 14} y={origine.y + 30} text-anchor="end">Castellammare di Stabia</text>
+        </g>
+      </svg>
+    </figure>
+  </div>
+</section>
+
+<script>
+  // Telefono o browser senza animazioni legate allo scroll: l'animazione parte a tempo quando la sezione entra in vista.
+  for (const s of document.querySelectorAll<HTMLElement>('[data-anima="mappa"]')) {
+    // mappa: sempre a tempo (anche su computer), cosi' le rotte si disegnano tutte da sole appena la mappa e' in vista
+    s.classList.add('temporizzato');
+    new IntersectionObserver((voci, oss) => {
+      if (voci[0].isIntersecting) { s.classList.add('vista'); oss.disconnect(); }
+    // parte appena la mappa sta per entrare nello schermo (margine di 10% sotto), cosi' il disegno e' gia' in corso quando appare
+    }, { threshold: 0, rootMargin: '0px 0px 10% 0px' }).observe(s.querySelector('figure')!);
+  }
+</script>
+
+<style>
+  .rotte { padding-bottom: var(--sezione); }
+  .riga { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: 2rem 5rem; align-items: center; }
+  .testo { display: grid; gap: 1.4rem; justify-items: start; }
+  .riga-rotta { display: flex; align-items: center; gap: 0.9rem; margin: 0; }
+  .numero { color: var(--accento); }
+  .tratto { width: 48px; height: 1.5px; background: currentColor; transform: skewY(-12deg); opacity: 0.6; }
+  h2 em { font-style: normal; color: var(--accento); }
+  .lead { margin: 0; }
+  .legenda { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; font-size: 0.95rem; }
+  .legenda li { display: flex; align-items: center; gap: 0.8rem; }
+  .segno { width: 36px; height: 0; border-top: 2.5px solid var(--blu); }
+  .segno.mare { border-top-style: dashed; border-color: var(--azzurro); }
+
+  .carta { margin: 0; }
+  svg { width: 100%; height: auto; max-height: 82vh; overflow: visible; }
+  .terra { fill: #fff; stroke: rgb(0 57 116 / 0.35); stroke-width: 1.2; stroke-linejoin: round; filter: drop-shadow(0 18px 30px rgb(0 57 116 / 0.12)); }
+
+  .rotta path { fill: none; stroke-linecap: round; }
+  .scia { stroke: rgb(0 57 116 / 0.1); stroke-width: 6; }
+  .linea { stroke: var(--blu); stroke-width: 2; stroke-dasharray: 1; stroke-dashoffset: 0; }
+  .mare .linea { stroke: var(--azzurro); stroke-width: 2.2; stroke-dasharray: 0.018 0.014; }
+
+  /* impulso che viaggia da Castellammare alla citta', in continuo (un solo trattino: periodo > lunghezza del percorso) */
+  .flusso { stroke: var(--giallo); stroke-width: 4; stroke-dasharray: 0.06 2; stroke-dashoffset: 0.06; opacity: 0; filter: drop-shadow(0 0 1.5px var(--blu)) drop-shadow(0 0 5px rgb(255 242 0 / 0.9)); }
+  .punto { fill: var(--blu); }
+  .onda { fill: none; stroke: var(--blu); stroke-width: 1.5; opacity: 0; transform-box: fill-box; transform-origin: center; }
+  .citta text, .partenza text { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.06em; fill: var(--acciaio-800); paint-order: stroke; stroke: #fff; stroke-width: 3px; }
+  .partenza text { font-size: 12px; font-weight: 500; fill: var(--blu); }
+  .alone { fill: rgb(255 242 0 / 0.35); transform-box: fill-box; transform-origin: center; }
+  .centro { fill: var(--giallo); stroke: var(--blu); stroke-width: 2; }
+  .ago { fill: var(--blu); }
+
+  /* anelli e alone: sempre in loop (le rotte e gli impulsi sono a tempo, vedi sotto: nessun legame con lo scroll) */
+  @media (prefers-reduced-motion: no-preference) {
+    .onda { animation: onda 2.6s var(--ease-out) infinite; animation-delay: calc(var(--i) * 0.19s); }
+    .alone { animation: respira 2.4s var(--ease-in-out) infinite; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .temporizzato .strada .linea { stroke-dashoffset: 1; animation: traccia 0.7s var(--ease-out) both paused; animation-delay: calc(0.05s + var(--i) * 0.09s); }
+    .temporizzato :is(.mare .linea, .scia, .citta) { opacity: 0; animation: compare 0.5s ease-out both paused; animation-delay: calc(0.05s + var(--i) * 0.09s); }
+    /* stessi selettori delle regole in pausa (+ .vista): specificita' piu' alta, quindi il disegno parte davvero */
+    .temporizzato.vista .strada .linea, .temporizzato.vista :is(.mare .linea, .scia, .citta) { animation-play-state: running; }
+    /* solo telefono: disegno delle rotte quasi istantaneo (circa 0,6 s in tutto) */
+    @media (max-width: 899px) {
+      .temporizzato .strada .linea { animation-duration: 0.3s; animation-delay: calc(var(--i) * 0.025s); }
+      .temporizzato :is(.mare .linea, .scia, .citta) { animation-duration: 0.25s; animation-delay: calc(var(--i) * 0.025s); }
+    }
+    /* l'impulso giallo e' la "penna" che traccia la rotta blu (stessi tempi), poi continua a correre in loop */
+    .temporizzato .flusso {
+      opacity: 0;
+      animation-name: guida, viaggio;
+      animation-duration: 0.7s, 2.4s;
+      animation-timing-function: var(--ease-out), var(--ease-in-out);
+      animation-delay: calc(0.05s + var(--i) * 0.09s), calc(0.05s + var(--i) * 0.09s + 0.7s);
+      animation-iteration-count: 1, infinite;
+      animation-fill-mode: none, none;
+      animation-direction: normal, normal;
+      animation-play-state: paused, paused;
+    }
+    @media (max-width: 899px) {
+      .temporizzato .flusso { animation-duration: 0.3s, 2.4s; animation-delay: calc(var(--i) * 0.025s), calc(var(--i) * 0.025s + 0.3s); }
+    }
+    .temporizzato.vista .flusso { animation-play-state: running, running; }
+    .temporizzato .onda { animation: onda 2.6s var(--ease-out) infinite; animation-delay: calc(1.5s + var(--i) * 0.19s); }
+  }
+  @keyframes viaggio { from { stroke-dashoffset: 0.06; opacity: 1; } to { stroke-dashoffset: -1; opacity: 1; } }
+  @keyframes guida { from { stroke-dashoffset: 0; opacity: 1; } to { stroke-dashoffset: -0.94; opacity: 1; } }
+  @keyframes traccia { to { stroke-dashoffset: 0; } }
+  @keyframes compare { to { opacity: 1; } }
+  @keyframes onda { 0% { opacity: 0.8; transform: scale(1); } 100% { opacity: 0; transform: scale(3.2); } }
+  @keyframes respira { 50% { transform: scale(1.35); opacity: 0.6; } }
+
+  @media (max-width: 899px) {
+    .riga { grid-template-columns: minmax(0, 1fr); }
+    .citta text { font-size: 13px; }
+  }
+</style>

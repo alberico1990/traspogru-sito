@@ -1,0 +1,55 @@
+---
+// Nastro segnaletico: fascia gialla inclinata come il piano di carico, con i bordi a strisce
+// dei cartelli "trasporto eccezionale". Il testo scorre in loop; decorativo (aria-hidden).
+interface Props { voci?: string[]; inverso?: boolean }
+const {
+  voci = ['Lamiere fuori sagoma', 'Trasporti eccezionali', 'Piano inclinato', 'Tutta Italia', 'Isole comprese'],
+  inverso = false,
+} = Astro.props;
+// ripetuto due volte: l'animazione sposta la fila di meta' e riparte senza stacchi
+const giro = [...voci, ...voci, ...voci];
+---
+
+<div class:list={['nastro', { inverso }]} aria-hidden="true">
+  <div class="fila">
+    {[0, 1].map(() => (
+      <span class="giro">
+        {giro.map((v) => <><span class="voce">{v}</span><svg class="stella" viewBox="0 0 20 20"><path d="M10 0l2.2 7.8L20 10l-7.8 2.2L10 20l-2.2-7.8L0 10l7.8-2.2z" /></svg></>)}
+      </span>
+    ))}
+  </div>
+</div>
+
+<style>
+  .nastro {
+    --angolo: -2.6deg;
+    position: relative; z-index: 6;
+    width: 112vw; margin: -2.2rem 0 -2.2rem -6vw;
+    transform: rotate(var(--angolo));
+    background: var(--giallo); color: var(--inchiostro);
+    padding: 1.05rem 0;
+    box-shadow: 0 18px 40px -18px rgb(4 11 22 / 0.55);
+    overflow: hidden;
+  }
+  .inverso { --angolo: 2.6deg; }
+  /* bordi a strisce da segnaletica */
+  .nastro::before, .nastro::after {
+    content: ''; position: absolute; left: 0; right: 0; height: 7px;
+    background: repeating-linear-gradient(-45deg, var(--inchiostro) 0 9px, var(--giallo) 9px 18px);
+  }
+  .nastro::before { top: 0; }
+  .nastro::after { bottom: 0; }
+  .fila { display: flex; width: max-content; }
+  .giro { display: flex; align-items: center; gap: 1.6rem; padding-right: 1.6rem; }
+  .voce {
+    font-family: var(--f-display); font-weight: 900; text-transform: uppercase; white-space: nowrap;
+    font-size: clamp(1.35rem, 1rem + 1.2vw, 2.1rem); line-height: 1; letter-spacing: 0.01em;
+  }
+  .stella { width: 18px; height: 18px; fill: var(--blu); flex-shrink: 0; }
+  @media (prefers-reduced-motion: no-preference) {
+    .fila { animation: scorri 38s linear infinite; }
+    .inverso .fila { animation-direction: reverse; }
+    .nastro:hover .fila { animation-play-state: paused; }
+  }
+  @keyframes scorri { to { transform: translateX(-50%); } }
+</style>

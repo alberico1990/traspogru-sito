@@ -1,0 +1,14 @@
+---
+import Testo from '../layouts/Testo.astro';
+import Pulsante from '../components/Pulsante.astro';
+---
+
+<Testo titolo="Fuori percorso" descrizione="Pagina non trovata." etichetta="Errore 404" noindex>
+  <p class="lead">Questa pagina non esiste o è stata spostata. Nessun problema: ti rimettiamo sulla strada giusta.</p>
+  <div class="azioni">
+    <Pulsante href="/">Torna alla home</Pulsante>
+    <Pulsante href="/contatti" variante="secondario">Richiedi un preventivo</Pulsante>
+  </div>
+</Testo>
+
+<style>.azioni { display: flex; flex-wrap: wrap; gap: 1rem 1.5rem; margin-top: 2rem; }</style>

@@ -1,0 +1,62 @@
+---
+// Intro della Home: la rosa dei venti si disegna, il fulmine si accende, la tenda diagonale scopre il sito.
+// A ogni apertura della Home, ~2,5 s, saltabile con un clic. Mai con "riduci movimento".
+// Per toglierla: SITO.intro = false in src/config/sito.ts.
+import Simbolo from '../../assets/logo/simbolo-colore.svg';
+import { SITO } from '../../config/sito';
+---
+
+{SITO.intro && (
+  <>
+    <div class="intro" hidden aria-hidden="true" data-intro>
+      <div class="centro">
+        <Simbolo class="simbolo" />
+        <p class="nome">Traspogru</p>
+        <p class="sotto">Lamiere fuori sagoma · Tutta Italia</p>
+      </div>
+    </div>
+    <script is:inline>
+      (function () {
+        var el = document.querySelector('[data-intro]');
+        if (!el) return;
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) { el.remove(); return; }
+        el.hidden = false;
+        var chiudi = function () { el.classList.add('via'); setTimeout(function () { el.remove(); }, 700); };
+        var t = setTimeout(chiudi, 2500);
+        el.addEventListener('click', function () { clearTimeout(t); chiudi(); });
+      })();
+    </script>
+  </>
+)}
+
+<style>
+  .intro {
+    position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; cursor: pointer;
+    background: radial-gradient(circle at 50% 45%, #0b1d38, var(--notte-950) 65%);
+    transition: clip-path 0.7s var(--ease-in-out);
+    clip-path: polygon(0 0, 118% 0, 100% 100%, 0 100%);
+  }
+  .intro[hidden] { display: none; }
+  .intro.via { clip-path: polygon(118% 0, 118% 0, 100% 100%, 100% 100%); }
+  .centro { display: grid; justify-items: center; gap: 0.6rem; }
+  .intro :global(.simbolo) { width: min(52vw, 280px); height: auto; overflow: visible; }
+  /* tracciato: i contorni si disegnano, poi i riempimenti compaiono */
+  .intro :global(.simbolo path) {
+    stroke: var(--giallo); stroke-width: 0.9; stroke-dasharray: 520; stroke-dashoffset: 520;
+    fill-opacity: 0;
+    animation: disegna 0.9s var(--ease-out) forwards, riempi 0.45s ease-out 0.7s forwards;
+  }
+  .intro :global(.simbolo path:nth-child(3n)) { animation-delay: 0.08s, 0.75s; }
+  .intro :global(.simbolo path:nth-child(3n+1)) { animation-delay: 0.16s, 0.8s; }
+  .intro :global(.simbolo) { animation: lampo 0.5s ease-out 1s both; }
+  .nome {
+    margin: 0.4rem 0 0; font-family: var(--f-display); font-weight: 900; text-transform: uppercase;
+    font-size: clamp(2.2rem, 1.6rem + 3vw, 3.6rem); line-height: 1; letter-spacing: 0.06em; color: #fff;
+    animation: sale 0.6s var(--ease-out) 0.55s both;
+  }
+  .sotto { margin: 0; font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--azzurro); animation: sale 0.6s var(--ease-out) 0.7s both; }
+  @keyframes disegna { to { stroke-dashoffset: 0; } }
+  @keyframes riempi { to { fill-opacity: 1; stroke-width: 0; } }
+  @keyframes lampo { 0% { filter: drop-shadow(0 0 0 transparent); } 40% { filter: drop-shadow(0 0 22px rgb(255 242 0 / 0.75)); } 100% { filter: drop-shadow(0 0 0 transparent); } }
+  @keyframes sale { from { opacity: 0; transform: translateY(14px); } }
+</style>

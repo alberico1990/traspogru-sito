@@ -1,0 +1,78 @@
+---
+import Simbolo from '../assets/logo/simbolo-colore.svg';
+import { SITO, whatsappLink, TESTO_WHATSAPP_PREVENTIVO } from '../config/sito';
+
+const { indirizzo: ind, legale } = SITO;
+const anno = new Date().getFullYear();
+const gradi = (v: number, pos: string, neg: string) => {
+  const a = Math.abs(v), g = Math.floor(a), m = Math.round((a - g) * 60);
+  return `${g}°${String(m).padStart(2, '0')}′${v >= 0 ? pos : neg}`;
+};
+---
+
+<footer class="piede tema-scuro">
+  <div class="contenitore">
+    <div class="alto">
+      <div class="firma">
+        <Simbolo class="simbolo" aria-hidden="true" />
+        <p class="motto">Lamiere fuori sagoma.<br />In tutta Italia.</p>
+        <p class="etichetta">{gradi(ind.lat, 'N', 'S')} · {gradi(ind.lng, 'E', 'O')} — Castellammare di Stabia</p>
+      </div>
+
+      <nav aria-label="Pagine" class="colonna">
+        <p class="etichetta">Pagine</p>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/specializzazione">Specializzazione</a></li>
+          <li><a href="/settori">Settori</a></li>
+          <li><a href="/flotta">Flotta</a></li>
+          <li><a href="/lavori">Lavori realizzati</a></li>
+          <li><a href="/lavora-con-noi">Lavora con noi</a></li>
+          <li><a href="/contatti">Contatti e preventivo</a></li>
+        </ul>
+      </nav>
+
+      <div class="colonna">
+        <p class="etichetta">Contatti</p>
+        <address>
+          {ind.via}<br />{ind.cap} {ind.citta} ({ind.provincia})
+        </address>
+        <ul>
+          <li><a href={`tel:${SITO.telefono.replace(/\s/g, '')}`}>{SITO.telefonoVisibile}</a></li>
+          <li><a href={whatsappLink(TESTO_WHATSAPP_PREVENTIVO)} target="_blank" rel="noopener">WhatsApp</a></li>
+          <li><a href={`mailto:${SITO.email}`}>{SITO.email}</a></li>
+          <li><a href={SITO.facebook} target="_blank" rel="noopener">Facebook</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="legale">
+      <p>
+        © {anno} {SITO.ragioneSociale} · Sede legale {legale.sedeLegale} · P.IVA {legale.piva} · REA {legale.rea}{legale.capitaleSociale && ` · Capitale sociale ${legale.capitaleSociale}`} · Iscrizione Albo Autotrasportatori {legale.albo}
+      </p>
+      <p class="link-legali"><a href="/privacy">Privacy</a> <a href="/cookie">Cookie</a></p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .piede { background: var(--notte-950); padding: var(--sezione) 0 2rem; position: relative; overflow: hidden; }
+  .alto { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 3rem; padding-bottom: 4rem; border-bottom: 1px solid var(--linea); }
+  .firma :global(.simbolo) { width: 112px; height: 112px; margin-bottom: 1.5rem; }
+  .motto { font-family: var(--f-display); font-weight: 800; text-transform: uppercase; font-size: clamp(2rem, 1.4rem + 2vw, 3rem); line-height: 0.95; margin-bottom: 1.2rem; }
+  .colonna ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.45rem; }
+  .colonna a { text-decoration: none; color: var(--testo-tenue); transition: color 0.2s; }
+  .colonna a:hover { color: var(--giallo); }
+  .colonna .etichetta { margin-bottom: 1rem; }
+  address { font-style: normal; color: var(--testo); margin-bottom: 1rem; }
+  .legale { display: flex; justify-content: space-between; gap: 2rem; padding-top: 1.5rem; font-size: 0.8rem; color: var(--testo-tenue); }
+  .legale p { max-width: none; margin: 0; }
+  .link-legali { display: flex; gap: 1.2rem; flex-shrink: 0; }
+  @media (min-width: 900px) { .legale { padding-right: 96px; } }
+  @media (max-width: 860px) {
+    .alto { grid-template-columns: 1fr 1fr; }
+    .firma { grid-column: 1 / -1; }
+    .legale { flex-direction: column; gap: 0.8rem; }
+  }
+  @media (max-width: 520px) { .alto { grid-template-columns: 1fr; } }
+</style>

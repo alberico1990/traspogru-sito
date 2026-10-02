@@ -1,0 +1,136 @@
+---
+import Base from '../layouts/Base.astro';
+import AperturaPagina from '../components/AperturaPagina.astro';
+import PianoInclinato from '../components/home/PianoInclinato.astro';
+import IntestazioneSezione from '../components/IntestazioneSezione.astro';
+import FotoInclinata from '../components/FotoInclinata.astro';
+import InvitoPreventivo from '../components/InvitoPreventivo.astro';
+import DatiStrutturati from '../components/DatiStrutturati.astro';
+import { FAQ } from '../data/faq';
+
+import fotoApertura from '../assets/foto/daf-xg-lamiere-inclinate.jpg';
+import fotoLamiere from '../assets/foto/lamiere-fuori-sagoma-laterale.jpg';
+import fotoTraghetto from '../assets/foto/traghetto-lamiere-inclinate.jpg';
+import fotoCarrello from '../assets/foto/carrello-carico-semirimorchio.jpg';
+
+const vantaggi = [
+  { titolo: 'Ingombro ridotto', testo: 'L’inclinazione riduce la larghezza del carico: meno vincoli su strada e, in molti casi, nessun trasporto eccezionale.' },
+  { titolo: 'Carico protetto', testo: 'La lamiera appoggia su tutta la struttura del piano: niente flessioni, niente segni, arriva pronta per la lavorazione.' },
+  { titolo: 'Peso bilanciato', testo: 'Il baricentro resta sull’asse del semirimorchio: il mezzo viaggia stabile anche con lastre pesanti.' },
+  { titolo: 'Un solo interlocutore', testo: 'Pianificazione, autorizzazioni quando servono, viaggio e consegna: seguiamo tutto noi, dal carico allo scarico, anche con carrelli elevatori nostri fino a 16 t.' },
+];
+
+const fasi = [
+  { n: '01', titolo: 'Richiesta', testo: 'Ci indichi materiale, misure indicative, peso, luoghi e date. Una foto o un disegno aiutano.' },
+  { n: '02', titolo: 'Studio del carico', testo: 'Valutiamo la configurazione migliore e verifichiamo se il viaggio rientra nei limiti di sagoma o serve un’autorizzazione.' },
+  { n: '03', titolo: 'Proposta', testo: 'Ricevi un preventivo chiaro, con tempi e modalità di consegna.' },
+  { n: '04', titolo: 'Viaggio', testo: 'Carichiamo, fissiamo e consegniamo. Ti teniamo aggiornato fino allo scarico.' },
+];
+---
+
+<Base
+  titolo="Trasporto lamiere fuori sagoma su piano inclinato"
+  descrizione="Trasporto di lamiere di grande formato e fuori sagoma su semirimorchi a piano inclinato, anche in regime di trasporto eccezionale. In tutta Italia, isole comprese."
+  headerSuHero
+>
+  <DatiStrutturati slot="head" tipo="faq" />
+  <AperturaPagina
+    etichetta="Specializzazione"
+    titolo="Lamiere <em>fuori</em> sagoma, su piano inclinato."
+    sottotitolo="È il nostro mestiere: portare lastre di grande formato dove servono, con l’ingombro ridotto al minimo e il carico protetto per tutto il viaggio."
+    foto={fotoApertura}
+    alt="DAF XG Traspogru con semirimorchio rosso a piano inclinato coperto"
+  />
+
+  <PianoInclinato conPulsante={false} />
+
+  <section class="blocco tema-scuro taglio-alto">
+    <div class="contenitore">
+      <IntestazioneSezione numero="02" etichetta="I vantaggi" titolo="Perché <em>inclinata</em> è meglio." />
+      <ul class="vantaggi">
+        {vantaggi.map((v, i) => (
+          <li class="appare">
+            <span class="etichetta">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{v.titolo}</h3>
+            <p>{v.testo}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="blocco tema-chiaro taglio-alto">
+    <div class="contenitore doppia">
+      <div>
+        <IntestazioneSezione numero="03" etichetta="Come lavoriamo" titolo="Dalla richiesta <em>allo</em> scarico." />
+        <ol class="fasi">
+          {fasi.map((f) => (
+            <li class="appare">
+              <span class="etichetta">{f.n}</span>
+              <div><h3>{f.titolo}</h3><p>{f.testo}</p></div>
+            </li>
+          ))}
+        </ol>
+      </div>
+      <div class="foto-colonna">
+        <FotoInclinata src={fotoLamiere} alt="Scania Traspogru con lamiere fuori sagoma caricate in obliquo e legate con cinghie" didascalia="Lamiere fuori sagoma pronte a partire" />
+        <FotoInclinata src={fotoCarrello} alt="Carrello elevatore giallo da 16 tonnellate carica una grande lamiera su un semirimorchio, con il monte sullo sfondo" didascalia="Carico con carrelli nostri, fino a 16 t" verso="sinistra" />
+        <FotoInclinata src={fotoTraghetto} alt="Scania Traspogru con semirimorchio a piano inclinato nella stiva di un traghetto" didascalia="Anche verso le isole, in traghetto" verso="destra" />
+      </div>
+    </div>
+  </section>
+
+  <section class="blocco tema-chiaro griglia-tecnica" id="domande">
+    <div class="contenitore stretto">
+      <IntestazioneSezione numero="04" etichetta="Domande frequenti" titolo="Quello che ci <em>chiedono</em> più spesso." />
+      <div class="faq">
+        {FAQ.map((f, i) => (
+          <details class="appare" open={i === 0}>
+            <summary><h3>{f.domanda}</h3><span class="segno" aria-hidden="true"></span></summary>
+            <p>{f.risposta}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <InvitoPreventivo />
+</Base>
+
+<style>
+  .blocco { padding-bottom: var(--sezione); }
+  .vantaggi { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; }
+  .vantaggi li { border-top: 2px solid var(--accento); padding-top: 1.2rem; display: grid; gap: 0.7rem; align-content: start; }
+  .vantaggi .etichetta { color: var(--accento); }
+  .vantaggi p { margin: 0; color: var(--testo-tenue); }
+
+  .doppia { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem 5rem; align-items: start; }
+  .fasi { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.8rem; }
+  .fasi li { display: grid; grid-template-columns: 3rem 1fr; gap: 0.5rem; }
+  .fasi .etichetta { color: var(--accento); padding-top: 0.25rem; }
+  .fasi h3 { margin-bottom: 0.5rem; }
+  .fasi p { margin: 0; color: var(--testo-tenue); }
+  .foto-colonna { display: grid; gap: 3rem; }
+
+  .stretto { max-width: 980px; }
+  .faq { display: grid; gap: 0; border-top: 1px solid var(--linea); }
+  details { border-bottom: 1px solid var(--linea); background: color-mix(in srgb, var(--fondo), #fff 60%); }
+  summary {
+    list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 1.5rem;
+    padding: 1.5rem 1.2rem;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary h3 { font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.6rem); text-transform: none; font-family: var(--f-testo); font-weight: 600; line-height: 1.3; letter-spacing: 0; }
+  .segno { position: relative; flex-shrink: 0; width: 20px; height: 20px; }
+  .segno::before, .segno::after { content: ''; position: absolute; left: 0; top: 9px; width: 20px; height: 2px; background: var(--blu); transition: transform 0.3s var(--ease-out); }
+  .segno::after { transform: rotate(90deg); }
+  details[open] .segno::after { transform: rotate(0); }
+  details p { padding: 0 1.2rem 1.6rem; margin: 0; color: var(--testo-tenue); max-width: 70ch; }
+  /* apertura animata dei dettagli (interpolate-size in global.css, dove supportato) */
+  details::details-content { block-size: 0; overflow: hidden; transition: block-size 0.4s var(--ease-out), content-visibility 0.4s allow-discrete; }
+  details[open]::details-content { block-size: auto; }
+
+  @media (max-width: 1000px) { .vantaggi { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 899px) { .doppia { grid-template-columns: 1fr; } }
+  @media (max-width: 560px) { .vantaggi { grid-template-columns: 1fr; } }
+</style>

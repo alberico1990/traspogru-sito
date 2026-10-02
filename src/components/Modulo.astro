@@ -1,0 +1,164 @@
+---
+// Modulo unico per preventivi e candidature, senza server: compone un messaggio ordinato
+// e lo apre in WhatsApp (o nell'app di posta). Nessun dato passa dal sito.
+import { SITO } from '../config/sito';
+
+interface Props { tipo: 'preventivo' | 'candidatura' }
+const { tipo } = Astro.props;
+const titolo = tipo === 'preventivo' ? 'Richiesta di preventivo dal sito' : 'Candidatura autista dal sito';
+---
+
+<form class="modulo" data-modulo data-titolo={titolo} data-whatsapp={SITO.whatsapp} data-email={SITO.email}>
+  <fieldset>
+    <legend class="etichetta">I tuoi dati</legend>
+    <div class="griglia">
+      <label class="campo"><span>Nome e cognome *</span><input name="nome" required autocomplete="name" data-etichetta="Nome" /></label>
+      {tipo === 'preventivo'
+        ? <label class="campo"><span>Azienda</span><input name="azienda" autocomplete="organization" data-etichetta="Azienda" /></label>
+        : <label class="campo"><span>Città di residenza</span><input name="citta" autocomplete="address-level2" data-etichetta="Città" /></label>}
+      <label class="campo"><span>Telefono *</span><input name="telefono" type="tel" required autocomplete="tel" inputmode="tel" data-etichetta="Telefono" /></label>
+      <label class="campo"><span>Email</span><input name="email" type="email" autocomplete="email" data-etichetta="Email" /></label>
+    </div>
+  </fieldset>
+
+  {tipo === 'preventivo' ? (
+    <fieldset>
+      <legend class="etichetta">Il carico</legend>
+      <div class="griglia">
+        <label class="campo intero"><span>Tipo di carico *</span>
+          <select name="carico" required data-etichetta="Tipo di carico">
+            <option value="">Seleziona…</option>
+            <option>Lamiere fuori sagoma</option>
+            <option>Lamiere e lastre entro sagoma</option>
+            <option>Altro carico fuori misura</option>
+          </select>
+        </label>
+        <label class="campo"><span>Misure indicative</span><input name="misure" placeholder="es. 3,0 × 12 m, spessore 40 mm" data-etichetta="Misure" /></label>
+        <label class="campo"><span>Peso indicativo</span><input name="peso" placeholder="es. 25 t" data-etichetta="Peso" /></label>
+        <label class="campo"><span>Luogo di carico *</span><input name="partenza" required placeholder="Città o indirizzo" data-etichetta="Carico da" /></label>
+        <label class="campo"><span>Luogo di scarico *</span><input name="arrivo" required placeholder="Città o indirizzo" data-etichetta="Scarico a" /></label>
+        <label class="campo"><span>Data indicativa</span><input name="data" type="date" data-etichetta="Data indicativa" /></label>
+        <label class="campo"><span>Quante consegne</span>
+          <select name="frequenza" data-etichetta="Consegne"><option>Una tantum</option><option>Più viaggi</option><option>Consegne ricorrenti</option></select>
+        </label>
+        <label class="campo intero"><span>Note</span><textarea name="note" rows="4" placeholder="Tutto quello che ci aiuta a capire il trasporto" data-etichetta="Note"></textarea></label>
+      </div>
+    </fieldset>
+  ) : (
+    <fieldset>
+      <legend class="etichetta">La tua esperienza</legend>
+      <div class="griglia">
+        <label class="spunta"><input type="checkbox" name="patente_ce" value="sì" data-etichetta="Patente CE" /><span>Ho la patente CE</span></label>
+        <label class="spunta"><input type="checkbox" name="cqc" value="sì" data-etichetta="CQC merci" /><span>Ho la CQC merci</span></label>
+        <label class="campo intero"><span>Esperienza alla guida di mezzi pesanti</span>
+          <select name="esperienza" data-etichetta="Esperienza"><option>Meno di 1 anno</option><option>1–3 anni</option><option>3–10 anni</option><option>Oltre 10 anni</option></select>
+        </label>
+        <label class="campo intero"><span>Presentati in breve</span><textarea name="note" rows="4" placeholder="Mezzi guidati, tipo di trasporti, disponibilità" data-etichetta="Presentazione"></textarea></label>
+      </div>
+    </fieldset>
+  )}
+
+  <p class="nota-allegati">
+    {tipo === 'preventivo'
+      ? 'Hai foto o disegni del carico? Allegali direttamente nella chat WhatsApp o nell’email che si apre dopo l’invio.'
+      : 'Hai un curriculum? Allegalo nella chat WhatsApp o nell’email che si apre dopo l’invio.'}
+  </p>
+
+  <div class="invio">
+    <button type="submit" class="bottone-invio" data-canale="whatsapp">
+      <span>Invia su WhatsApp</span>
+      <svg viewBox="0 0 20 12" aria-hidden="true"><path d="M0 6h18M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" /></svg>
+    </button>
+    <button type="submit" class="bottone-secondario" data-canale="email">Invia per email</button>
+    <p class="esito" role="status" aria-live="polite" data-esito></p>
+  </div>
+  <p class="privacy">I dati che scrivi restano sul tuo dispositivo finché non invii il messaggio da WhatsApp o dalla tua email. Vedi l’<a href="/privacy">informativa privacy</a>.</p>
+  <noscript><p class="esito errore">Per usare il modulo serve JavaScript. Puoi scriverci su WhatsApp al {SITO.telefonoVisibile} o a {SITO.email}.</p></noscript>
+</form>
+
+<script>
+  for (const modulo of document.querySelectorAll<HTMLFormElement>('[data-modulo]')) {
+    modulo.noValidate = true;
+    const esito = modulo.querySelector<HTMLElement>('[data-esito]')!;
+    let canale = 'whatsapp';
+    for (const b of modulo.querySelectorAll<HTMLButtonElement>('[data-canale]')) {
+      b.addEventListener('click', () => { canale = b.dataset.canale!; });
+    }
+
+    modulo.addEventListener('submit', (e) => {
+      e.preventDefault();
+      esito.className = 'esito';
+      if (!modulo.checkValidity()) {
+        modulo.classList.add('verificato');
+        esito.textContent = 'Compila i campi evidenziati.';
+        esito.classList.add('errore');
+        modulo.querySelector<HTMLElement>(':invalid')?.focus();
+        return;
+      }
+      // messaggio ordinato: una riga per campo compilato
+      const righe = [...modulo.querySelectorAll<HTMLInputElement>('[data-etichetta]')]
+        .filter((c) => (c.type === 'checkbox' ? c.checked : c.value.trim()))
+        .map((c) => `${c.dataset.etichetta}: ${c.type === 'checkbox' ? 'sì' : c.type === 'date' ? new Date(c.value).toLocaleDateString('it-IT') : c.value.trim()}`);
+      const titolo = modulo.dataset.titolo!;
+      const testo = `${titolo}\n\n${righe.join('\n')}`;
+      const url = canale === 'email'
+        ? `mailto:${modulo.dataset.email}?subject=${encodeURIComponent(titolo)}&body=${encodeURIComponent(testo)}`
+        : `https://wa.me/${modulo.dataset.whatsapp}?text=${encodeURIComponent(testo)}`;
+      window.open(url, canale === 'email' ? '_self' : '_blank', 'noopener');
+      esito.textContent = canale === 'email'
+        ? 'Si è aperta la tua app di posta con il messaggio pronto: premi Invia.'
+        : 'Si è aperto WhatsApp con il messaggio pronto: premi Invia.';
+      esito.classList.add('ok');
+    });
+  }
+</script>
+
+<style>
+  .modulo { display: grid; gap: 2.2rem; }
+  fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 1rem; }
+  legend { padding: 0; margin-bottom: 1rem; color: var(--accento); }
+  .griglia { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem 1.25rem; }
+  .intero { grid-column: 1 / -1; }
+  .campo { display: grid; gap: 0.45rem; font-size: var(--t-piccolo); font-weight: 500; }
+  input:not([type='checkbox']), select, textarea {
+    width: 100%; font: inherit; font-size: 1rem; color: var(--testo);
+    background: color-mix(in srgb, var(--fondo), var(--testo) 6%);
+    border: 1px solid var(--linea); border-bottom: 2px solid color-mix(in srgb, var(--testo) 35%, transparent);
+    padding: 0.85rem 0.95rem; border-radius: 0;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  input::placeholder, textarea::placeholder { color: color-mix(in srgb, var(--testo-tenue) 70%, transparent); }
+  input:focus, select:focus, textarea:focus { outline: none; border-bottom-color: var(--accento); background: color-mix(in srgb, var(--fondo), var(--testo) 10%); }
+  select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%); background-position: calc(100% - 20px) 55%, calc(100% - 15px) 55%; background-size: 5px 5px; background-repeat: no-repeat; }
+  select option { color: #0b1520; }
+  textarea { resize: vertical; }
+  .verificato :invalid { border-bottom-color: #ef4444; }
+
+  .spunta { display: flex; gap: 0.8rem; align-items: flex-start; font-size: 0.95rem; cursor: pointer; }
+  .spunta input { width: 20px; height: 20px; margin: 0.15rem 0 0; accent-color: var(--giallo); flex-shrink: 0; }
+
+  .nota-allegati { margin: 0; padding: 1rem 1.2rem; border-left: 2px solid var(--accento); background: color-mix(in srgb, var(--fondo), var(--accento) 6%); font-size: 0.95rem; }
+  .privacy { margin: 0; font-size: var(--t-piccolo); color: var(--testo-tenue); }
+
+  .invio { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; }
+  .bottone-invio {
+    display: inline-flex; align-items: center; gap: 0.8rem; border: 0; cursor: pointer;
+    padding: 1.15rem 2.2rem; min-height: 52px; background: var(--giallo); color: var(--inchiostro);
+    font-family: var(--f-mono); font-size: 0.82rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
+    clip-path: polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%);
+    transition: background 0.2s;
+  }
+  .bottone-invio:hover { background: #fff; }
+  .bottone-invio svg { width: 20px; }
+  .bottone-secondario {
+    background: none; border: 0; cursor: pointer; color: var(--testo); padding: 0.5rem 0;
+    font-family: var(--f-mono); font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase;
+    border-bottom: 1.5px solid var(--accento);
+  }
+  .esito { margin: 0; font-weight: 500; flex-basis: 100%; }
+  .esito.ok { color: #16a34a; }
+  .esito.errore { color: #dc2626; }
+  :global(.tema-scuro) .esito.ok { color: #4ade80; }
+  :global(.tema-scuro) .esito.errore { color: #f87171; }
+  @media (max-width: 640px) { .griglia { grid-template-columns: 1fr; } }
+</style>

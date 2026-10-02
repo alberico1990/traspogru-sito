@@ -1,0 +1,96 @@
+---
+// Flotta: su computer la pagina scorre in verticale e la fila di mezzi in orizzontale (scroll-driven, niente JS);
+// su telefono e senza supporto e' una fila sfogliabile con il dito (scroll-snap).
+import { Image } from 'astro:assets';
+import Pulsante from '../Pulsante.astro';
+import r450 from '../../assets/foto/scania-r450-arancione-notte.jpg';
+import frontale from '../../assets/foto/flotta-scania-daf-frontale.jpg';
+import s590 from '../../assets/foto/flotta-scania-590-500-tecnokar.jpg';
+import colline from '../../assets/foto/flotta-scania-colline.jpg';
+import daf from '../../assets/foto/daf-xg-lamiere-inclinate.jpg';
+import diabolik from '../../assets/foto/diabolik-semirimorchio.jpg';
+
+const mezzi = [
+  { foto: r450, nome: 'Scania R450', nota: 'Streamline arancione', alt: 'Scania R450 arancione Traspogru in un capannone, pavimento bagnato e fari accesi' },
+  { foto: s590, nome: 'Scania S 590', nota: 'Livrea bianca e verde', alt: 'Scania S 590 bianco e verde e Scania S 500 grigio affiancati in un parcheggio' },
+  { foto: frontale, nome: 'Scania S 500 · DAF XG', nota: 'Allestimenti su misura', alt: 'Scania S 500 Super grigio e DAF XG grigio visti di fronte nel piazzale' },
+  { foto: daf, nome: 'DAF XG', nota: 'Con semirimorchio a piano inclinato', alt: 'DAF XG grigio agganciato a un semirimorchio rosso a piano inclinato' },
+  { foto: colline, nome: 'In viaggio', nota: 'Tutta Italia', alt: 'Scania S 590 e Scania S 500 in un\'area di sosta tra le colline' },
+  { foto: diabolik, nome: 'Diabolik', nota: 'Il semirimorchio che si fa riconoscere', alt: 'Retro di un semirimorchio con la grafica Diabolik e la scritta traspogru srl' },
+];
+---
+
+<section class="flotta tema-scuro taglio-alto" aria-labelledby="flotta-titolo">
+  <div class="binario">
+    <div class="palco">
+      <div class="contenitore testa">
+        <div>
+          <p class="etichetta riga-rotta"><span class="numero">04</span><span class="tratto" aria-hidden="true"></span>La flotta</p>
+          <h2 id="flotta-titolo">Mezzi curati <em>come</em> il carico.</h2>
+        </div>
+        <p class="lead">Trattori Scania e DAF di ultima generazione, allestiti e mantenuti con una cura che si vede anche da lontano.</p>
+      </div>
+      <ul class="fila" tabindex="0" aria-label="Mezzi della flotta, scorri in orizzontale">
+        {mezzi.map((m, i) => (
+          <li class="mezzo">
+            <Image src={m.foto} alt={m.alt} widths={[480, 800, 1200]} sizes="(max-width: 900px) 80vw, 34vw" />
+            <div class="didascalia">
+              <span class="etichetta">{String(i + 1).padStart(2, '0')} / {String(mezzi.length).padStart(2, '0')}</span>
+              <h3>{m.nome}</h3>
+              <p>{m.nota}</p>
+            </div>
+          </li>
+        ))}
+        <li class="mezzo chiusura">
+          <p class="etichetta">Tutti i mezzi</p>
+          <Pulsante href="/flotta" variante="secondario">Vedi la flotta</Pulsante>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .flotta { padding: 0; view-timeline-name: --flotta; }
+  .palco { padding: calc(var(--sezione) + var(--pendenza)) 0 var(--sezione); display: grid; grid-template-columns: minmax(0, 1fr); gap: 3.5rem; }
+  .testa { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: end; }
+  .riga-rotta { display: flex; align-items: center; gap: 0.9rem; margin: 0 0 1.4rem; }
+  .numero { color: var(--accento); }
+  .tratto { width: 48px; height: 1.5px; background: currentColor; transform: skewY(-12deg); opacity: 0.6; }
+  h2 em { font-style: normal; color: var(--accento); }
+
+  .fila {
+    list-style: none; margin: 0; padding: 0 var(--gutter);
+    display: flex; gap: 1.5rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
+    padding-inline: max(var(--gutter), (100vw - var(--max)) / 2);
+  }
+  .fila::-webkit-scrollbar { display: none; }
+  .mezzo { flex: 0 0 min(80vw, 520px); scroll-snap-align: start; position: relative; }
+  .mezzo :global(img) {
+    width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover;
+    clip-path: polygon(0 0, calc(100% - 36px) 0, 100% 36px, 100% 100%, 0 100%);
+  }
+  .didascalia { display: grid; gap: 0.3rem; padding-top: 1.1rem; }
+  .didascalia .etichetta { color: var(--accento); }
+  .didascalia p { margin: 0; color: var(--testo-tenue); }
+  .chiusura { flex-basis: min(60vw, 320px); display: grid; align-content: center; justify-items: start; gap: 1.2rem; }
+
+  /* computer: scorrimento orizzontale guidato dallo scroll verticale */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) and (min-width: 900px) {
+      .binario { height: 320vh; }
+      .palco { position: sticky; top: 0; min-height: 100vh; align-content: center; padding: 4rem 0; overflow: hidden; }
+      .palco { gap: 2.5rem; }
+      .fila { overflow: visible; width: max-content; animation-name: scorre; animation-timing-function: linear; animation-fill-mode: both; animation-timeline: --flotta; animation-range: contain 0% contain 100%; }
+      .mezzo { flex: 0 0 auto; }
+      .chiusura { flex: 0 0 340px; padding-right: 2rem; }
+      .mezzo:not(.chiusura) :global(img) { height: min(50vh, 520px); width: auto; aspect-ratio: 4 / 5; }
+    }
+  }
+  /* sposta la fila di tutta la sua lunghezza meno lo schermo */
+  @keyframes scorre { to { transform: translateX(calc(-100% + 100vw)); } }
+
+  @media (max-width: 899px) {
+    .testa { grid-template-columns: 1fr; }
+  }
+</style>

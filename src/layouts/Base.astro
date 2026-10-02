@@ -1,0 +1,96 @@
+---
+import '@fontsource-variable/big-shoulders-display';
+import '@fontsource-variable/schibsted-grotesk';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import BarraAzioni from '../components/BarraAzioni.astro';
+import { SITO } from '../config/sito';
+import fontTitoli from '@fontsource-variable/big-shoulders-display/files/big-shoulders-display-latin-wght-normal.woff2?url';
+import fontTesto from '@fontsource-variable/schibsted-grotesk/files/schibsted-grotesk-latin-wght-normal.woff2?url';
+
+interface Props {
+  titolo: string;
+  descrizione: string;
+  /** l'header parte trasparente sopra un hero scuro */
+  headerSuHero?: boolean;
+  noindex?: boolean;
+  /** immagine per anteprime social (percorso in /public) */
+  immagine?: string;
+}
+const { titolo, descrizione, headerSuHero = false, noindex: noindexPagina = false, immagine = '/og.jpg' } = Astro.props;
+// la copia su GitHub Pages (PUBLIC_NOINDEX=true) non deve essere indicizzata: l'indirizzo ufficiale sara' il dominio del cliente
+const noindex = noindexPagina || import.meta.env.PUBLIC_NOINDEX === 'true';
+const titoloCompleto = titolo === SITO.marchio ? `${SITO.marchio} · Trasporto lamiere fuori sagoma in tutta Italia` : `${titolo} | ${SITO.marchio}`;
+// l'indirizzo canonico e' quello pulito (/flotta, /), senza index.html ne' barra finale
+const percorso = Astro.url.pathname.replace(/(index)?\.html$/, '').replace(/\/$/, '') || '/';
+const canonico = new URL(percorso, Astro.site ?? SITO.dominio).toString();
+const img = new URL(immagine, Astro.site ?? SITO.dominio).toString();
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{titoloCompleto}</title>
+    <meta name="description" content={descrizione} />
+    <link rel="canonical" href={canonico} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="theme-color" content="#071427" />
+    <meta name="color-scheme" content="light" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="it_IT" />
+    <meta property="og:site_name" content={SITO.marchio} />
+    <meta property="og:title" content={titoloCompleto} />
+    <meta property="og:description" content={descrizione} />
+    <meta property="og:url" content={canonico} />
+    <meta property="og:image" content={img} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="preload" href={fontTitoli} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={fontTesto} as="font" type="font/woff2" crossorigin />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    {!noindex && <link rel="sitemap" href="/sitemap-index.xml" />}
+    <script is:inline>
+      // comparsa degli elementi: su telefono o senza scroll-driven la gestisce lo script qui sotto
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches && (matchMedia('(max-width: 899px)').matches || !CSS.supports('animation-timeline: view()'))) {
+        document.documentElement.classList.add('comparsa-js');
+        addEventListener('DOMContentLoaded', function () {
+          var oss = new IntersectionObserver(function (voci) {
+            voci.forEach(function (v) { if (v.isIntersecting) { v.target.classList.add('visibile'); oss.unobserve(v.target); } });
+          }, { rootMargin: '0px 0px -10% 0px', threshold: 0.12 });
+          document.querySelectorAll('.appare').forEach(function (el, i) { el.style.transitionDelay = (i % 4) * 90 + 'ms'; oss.observe(el); });
+        });
+      }
+    </script>
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="salta" href="#contenuto">Vai al contenuto</a>
+    <Header suHero={headerSuHero} />
+    <main id="contenuto">
+      <slot />
+    </main>
+    <Footer />
+    <BarraAzioni />
+  </body>
+</html>
+
+<style>
+  .salta {
+    position: absolute; left: 1rem; top: -4rem; z-index: 100;
+    background: var(--giallo); color: var(--inchiostro);
+    padding: 0.6rem 1rem; font-weight: 600; text-decoration: none;
+  }
+  .salta:focus { top: 1rem; }
+</style>

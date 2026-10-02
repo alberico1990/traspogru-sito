@@ -1,0 +1,138 @@
+---
+import Base from '../layouts/Base.astro';
+import AperturaPagina from '../components/AperturaPagina.astro';
+import IntestazioneSezione from '../components/IntestazioneSezione.astro';
+import Modulo from '../components/Modulo.astro';
+import IconaWhatsapp from '../components/icone/Whatsapp.astro';
+import IconaTelefono from '../components/icone/Telefono.astro';
+import { SITO, whatsappLink, TESTO_WHATSAPP_PREVENTIVO } from '../config/sito';
+
+const ind = SITO.indirizzo;
+const indirizzoCompleto = `${ind.via}, ${ind.cap} ${ind.citta} (${ind.provincia})`;
+const query = encodeURIComponent(`Traspogru, ${ind.via}, ${ind.cap} ${ind.citta}`);
+// Nessuna mappa incorporata: niente cookie di terze parti. Link diretti alle app di navigazione.
+const mappe = [
+  { nome: 'Google Maps', href: `https://www.google.com/maps/search/?api=1&query=${query}` },
+  { nome: 'Apple Mappe', href: `https://maps.apple.com/?q=${query}&ll=${ind.lat},${ind.lng}` },
+  { nome: 'Waze', href: `https://waze.com/ul?ll=${ind.lat},${ind.lng}&navigate=yes` },
+];
+---
+
+<Base
+  titolo="Contatti e preventivo"
+  descrizione="Richiedi un preventivo per il trasporto di lamiere fuori sagoma: WhatsApp, telefono 349 050 0663, email o modulo guidato. Traspogru, Via Schito 177, Castellammare di Stabia."
+  headerSuHero
+>
+  <AperturaPagina
+    etichetta="Contatti"
+    titolo="Parliamo del <em>tuo</em> carico."
+    sottotitolo="Il modo più rapido è WhatsApp: mandaci una foto o un disegno e i dati essenziali. Se preferisci, il modulo qui sotto ti guida e prepara il messaggio per te."
+  >
+    <div class="canali">
+      <a class="canale wa" href={whatsappLink(TESTO_WHATSAPP_PREVENTIVO)} target="_blank" rel="noopener">
+        <IconaWhatsapp /><span><span class="etichetta">Il più rapido</span><strong>WhatsApp</strong></span>
+      </a>
+      <a class="canale tel" href={`tel:${SITO.telefono.replace(/\s/g, '')}`}>
+        <IconaTelefono /><span><span class="etichetta">Chiamaci</span><strong>{SITO.telefonoVisibile}</strong></span>
+      </a>
+      <a class="canale mail" href={`mailto:${SITO.email}`}>
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 5h18v14H3zM3 6l9 7 9-7" /></svg>
+        <span><span class="etichetta">Scrivici</span><strong class="piccolo">{SITO.email}</strong></span>
+      </a>
+    </div>
+  </AperturaPagina>
+
+  <section id="preventivo" class="blocco tema-chiaro taglio-alto">
+    <div class="contenitore riga">
+      <div class="colonna-modulo">
+        <IntestazioneSezione numero="01" etichetta="Modulo di preventivo" titolo="Descrivici il <em>trasporto</em>." />
+        <p class="lead intro">Compila i campi (quelli con * sono obbligatori): prepariamo noi il messaggio, tu lo invii con WhatsApp o per email.</p>
+        <Modulo tipo="preventivo" />
+      </div>
+
+      <aside class="sede" aria-labelledby="sede-titolo">
+        <div class="bussola" aria-hidden="true">
+          <svg viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="92" />
+            <circle cx="100" cy="100" r="70" class="interno" />
+            {Array.from({ length: 36 }, (_, k) => (
+              <line x1="100" y1={k % 9 === 0 ? 2 : 8} x2="100" y2="14" transform={`rotate(${k * 10} 100 100)`} />
+            ))}
+            <path d="M100 18 L108 100 L100 182 L92 100Z" class="ago" />
+            <path d="M18 100 L100 92 L182 100 L100 108Z" class="ago tenue" />
+            <text x="100" y="36" text-anchor="middle">N</text>
+          </svg>
+        </div>
+        <p class="etichetta">Sede operativa</p>
+        <h2 id="sede-titolo">Castellammare<br />di Stabia</h2>
+        <address>{indirizzoCompleto}</address>
+        <p class="coordinate etichetta">40°42′N · 14°29′E</p>
+        <p class="albo">Iscritti all’Albo nazionale degli autotrasportatori<br /><span class="etichetta">{SITO.legale.albo}</span></p>
+        <p class="etichetta apri">Apri il percorso con</p>
+        <ul class="mappe">
+          {mappe.map((m) => <li><a href={m.href} target="_blank" rel="noopener">{m.nome} →</a></li>)}
+        </ul>
+        <p class="etichetta apri">Seguici</p>
+        <ul class="mappe"><li><a href={SITO.facebook} target="_blank" rel="noopener">Facebook →</a></li></ul>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .canali { display: grid; grid-template-columns: repeat(3, auto); gap: 1rem; margin-top: 1rem; }
+  .canale {
+    display: flex; align-items: center; gap: 1rem; padding: 1rem 1.5rem 1rem 1.2rem; text-decoration: none;
+    background: rgb(255 255 255 / 0.06); border: 1px solid var(--linea);
+    clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%);
+    transition: background 0.25s, transform 0.3s var(--ease-out);
+  }
+  .canale:hover { background: rgb(255 255 255 / 0.12); transform: translateY(-3px); }
+  .canale > :global(svg) { width: 28px; height: 28px; flex-shrink: 0; }
+  .canale .etichetta { display: block; }
+  .canale strong { display: block; font-family: var(--f-display); font-size: 1.7rem; text-transform: uppercase; line-height: 1.05; }
+  .canale strong.piccolo { font-family: var(--f-testo); text-transform: none; font-size: 1.05rem; font-weight: 600; }
+  .wa > :global(svg) { color: #25d366; }
+  .tel { background: var(--giallo); color: var(--inchiostro); border-color: var(--giallo); }
+  .tel:hover { background: #fff; }
+  .tel .etichetta { color: var(--inchiostro); }
+
+  .blocco { padding-bottom: var(--sezione); scroll-margin-top: 40px; }
+  .riga { display: grid; grid-template-columns: 1.5fr 1fr; gap: 3rem 5rem; align-items: start; }
+  .intro { margin-bottom: 2.5rem; }
+  .sede {
+    position: sticky; top: 110px; display: grid; gap: 0.9rem; justify-items: start;
+    background: var(--notte-900); color: #e9eef4; padding: 2.5rem;
+    clip-path: polygon(0 0, calc(100% - 36px) 0, 100% 36px, 100% 100%, 0 100%);
+    --linea: rgb(90 182 214 / 0.3);
+  }
+  .sede .etichetta { color: #9fb1c6; margin: 0; }
+  .sede h2 { font-size: clamp(2.4rem, 1.8rem + 2vw, 3.4rem); }
+  address { font-style: normal; font-size: 1.1rem; }
+  .coordinate { color: var(--giallo) !important; }
+  .apri { margin-top: 0.8rem !important; }
+  .albo { margin: 0.4rem 0 0; font-size: var(--t-piccolo); color: #c9d5e3; border-left: 2px solid var(--giallo); padding-left: 0.8rem; }
+  .mappe { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem 1.2rem; }
+  .mappe a { color: #e9eef4; text-decoration: none; border-bottom: 1px solid var(--giallo); padding-bottom: 2px; }
+  .mappe a:hover { color: var(--giallo); }
+
+  .bussola { width: 150px; margin-bottom: 0.5rem; }
+  .bussola svg { width: 100%; height: auto; }
+  .bussola circle { fill: none; stroke: var(--azzurro); stroke-width: 1.5; }
+  .bussola .interno { stroke-dasharray: 3 5; opacity: 0.6; }
+  .bussola line { stroke: var(--azzurro); stroke-width: 1.2; }
+  .bussola .ago { fill: var(--giallo); }
+  .bussola .tenue { fill: var(--giallo-ombra); opacity: 0.5; }
+  .bussola text { font-family: var(--f-mono); font-size: 14px; fill: #e9eef4; }
+  @media (prefers-reduced-motion: no-preference) {
+    .bussola svg { animation: orienta 2.4s var(--ease-out) both; }
+  }
+  @keyframes orienta { 0% { transform: rotate(-120deg); } 70% { transform: rotate(12deg); } 100% { transform: rotate(0); } }
+
+  @media (max-width: 1100px) { .canali { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 899px) {
+    .riga { grid-template-columns: 1fr; }
+    .sede { position: static; }
+  }
+  @media (max-width: 560px) { .canali { grid-template-columns: 1fr; } }
+</style>

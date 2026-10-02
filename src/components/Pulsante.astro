@@ -1,0 +1,70 @@
+---
+interface Props {
+  href: string;
+  variante?: 'primario' | 'secondario' | 'testo';
+  piccolo?: boolean;
+  esterno?: boolean;
+  class?: string;
+}
+const { href, variante = 'primario', piccolo = false, esterno = false, class: classe } = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={['pulsante', variante, { piccolo }, classe]}
+  {...(esterno ? { target: '_blank', rel: 'noopener' } : {})}
+>
+  <slot name="icona" />
+  <span><slot /></span>
+  {variante !== 'primario' || !piccolo ? (
+    <svg class="freccia" viewBox="0 0 20 12" aria-hidden="true"><path d="M0 6h18M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" /></svg>
+  ) : null}
+</a>
+
+<style>
+  /* Forma a parallelogramma: la stessa pendenza delle lamiere sul piano inclinato */
+  .pulsante {
+    --taglio: 14px;
+    position: relative; display: inline-flex; align-items: center; gap: 0.7rem;
+    padding: 1.05rem 1.9rem; min-height: 48px;
+    font-family: var(--f-mono); font-size: 0.8rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
+    text-decoration: none; white-space: nowrap; isolation: isolate;
+    clip-path: polygon(var(--taglio) 0, 100% 0, calc(100% - var(--taglio)) 100%, 0 100%);
+    transition: color 0.3s var(--ease-out);
+  }
+  .piccolo { --taglio: 10px; padding: 0.7rem 1.3rem; min-height: 40px; font-size: 0.72rem; }
+  .freccia { width: 20px; transition: transform 0.35s var(--ease-out); }
+  .pulsante:hover .freccia { transform: translateX(5px); }
+
+  /* riempimento che scorre in diagonale al passaggio */
+  .pulsante::before {
+    content: ''; position: absolute; inset: 0; z-index: -1;
+    transform: translateX(-102%) skewX(-20deg); transform-origin: left;
+    transition: transform 0.45s var(--ease-out);
+  }
+  .pulsante:hover::before, .pulsante:focus-visible::before { transform: translateX(0) skewX(0); }
+
+  .primario { background: var(--giallo); color: var(--inchiostro); }
+  .primario::before { background: #fff; }
+
+  /* bordo che segue il parallelogramma: lati orizzontali col fondo, lati obliqui con ::after */
+  .secondario {
+    color: var(--testo);
+    background:
+      linear-gradient(currentColor, currentColor) top / 100% 1.5px no-repeat,
+      linear-gradient(currentColor, currentColor) bottom / 100% 1.5px no-repeat;
+  }
+  .secondario::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background:
+      linear-gradient(to bottom right, transparent calc(50% - 1px), currentColor calc(50% - 1px), currentColor calc(50% + 0.5px), transparent calc(50% + 0.5px)) left / var(--taglio) 100% no-repeat,
+      linear-gradient(to bottom right, transparent calc(50% - 1px), currentColor calc(50% - 1px), currentColor calc(50% + 0.5px), transparent calc(50% + 0.5px)) right / var(--taglio) 100% no-repeat;
+  }
+  .secondario::before { background: var(--accento); }
+  .secondario:hover { color: var(--fondo); }
+
+  .testo { clip-path: none; padding-inline: 0; color: var(--testo); }
+  .testo::before { display: none; }
+  .testo span { background: linear-gradient(var(--accento), var(--accento)) left bottom / 0 2px no-repeat; transition: background-size 0.35s var(--ease-out); padding-bottom: 2px; }
+  .testo:hover span { background-size: 100% 2px; }
+</style>

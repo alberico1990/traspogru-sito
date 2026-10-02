@@ -1,0 +1,35 @@
+---
+// Fascia di credibilita' sotto il video: Traspogru e' iscritta all'albo fornitori Fincantieri.
+// Logo Fincantieri inserito su richiesta del cliente (marchio registrato: vedi sorgenti/logo-terzi/FONTE.txt).
+import LogoFincantieri from '../LogoFincantieri.astro';
+---
+
+<section class="qualifica tema-scuro" aria-label="Qualifiche">
+  <div class="contenitore riga">
+    <p class="sigillo">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3Z" /><path d="m8.5 12 2.4 2.4 4.6-4.8" class="spunta" /></svg>
+      <strong>Vettore qualificato</strong>
+      <LogoFincantieri altezza="1.05em" class="logo-band" />
+    </p>
+    <p class="dettaglio">Trasporti eccezionali per l’industria navale</p>
+  </div>
+</section>
+
+<style>
+  .qualifica { background: var(--notte-950); border-block: 1px solid var(--linea); }
+  .riga { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.6rem 1.6rem; padding: 1.15rem 0; text-align: center; }
+  .sigillo { display: flex; align-items: center; gap: 0.75rem; margin: 0; font-size: clamp(1.25rem, 1rem + 1vw, 1.7rem); }
+  .sigillo :global(.logo-band) { margin-left: 0.15rem; }
+  .sigillo svg { width: 28px; height: 28px; flex-shrink: 0; fill: none; stroke: var(--giallo); stroke-width: 1.6; stroke-linejoin: round; }
+  .sigillo .spunta { stroke-width: 2; stroke-linecap: round; }
+  .sigillo strong {
+    font-family: var(--f-display); font-weight: 800; text-transform: uppercase;
+    font-size: 1em; letter-spacing: 0.02em; line-height: 1;
+  }
+  .dettaglio {
+    margin: 0; font-family: var(--f-mono); font-size: var(--t-etichetta); letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--testo-tenue);
+  }
+  .dettaglio::before { content: '·'; margin-right: 1.6rem; color: var(--giallo); }
+  @media (max-width: 640px) { .dettaglio::before { display: none; } }
+</style>
