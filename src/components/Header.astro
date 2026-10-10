@@ -12,7 +12,10 @@ const voci = [
   { href: '/lavori', testo: 'Lavori' },
   { href: '/lavora-con-noi', testo: 'Lavora con noi' },
 ];
-const attuale = Astro.url.pathname.replace(/(index)?\.html$/, '').replace(/\/$/, '');
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const percorso = Astro.url.pathname;
+const relativo = base && (percorso === base || percorso.startsWith(`${base}/`)) ? percorso.slice(base.length) : percorso;
+const attuale = relativo.replace(/(index)?\.html$/, '').replace(/\/$/, '');
 const inHome = attuale === '';
 const corrente = (href: string) => (href === '/' ? inHome : attuale === href) ? 'page' : undefined;
 const icoCasa = 'M3 11.5 12 4l9 7.5M5.5 9.5V20h5v-5.5h3V20h5V9.5';

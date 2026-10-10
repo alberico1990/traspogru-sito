@@ -7,9 +7,14 @@ const DOMINIO = 'https://www.traspogru.it';
 const ESCLUSE = ['/404'];
 // Build per GitHub Pages (impostata dal workflow): indirizzo NOME.github.io, niente sitemap (la copia non va indicizzata)
 const PAGES = process.env.GITHUB_PAGES === 'true';
+const repository = process.env.GITHUB_REPOSITORY?.split('/')[1];
+if (PAGES && (!process.env.GITHUB_REPOSITORY_OWNER || !repository)) {
+  throw new Error('Per la build Pages servono GITHUB_REPOSITORY_OWNER e GITHUB_REPOSITORY (proprietario/repository).');
+}
 
 export default defineConfig({
   site: PAGES ? `https://${process.env.GITHUB_REPOSITORY_OWNER}.github.io` : DOMINIO,
+  base: PAGES ? `/${repository}` : '/',
   trailingSlash: 'ignore',
   // ogni pagina in una cartella (contatti/index.html): i link /contatti funzionano su qualsiasi server
   build: { format: 'directory', inlineStylesheets: 'always' },

@@ -31,6 +31,8 @@ jobs:
           PUBLIC_NOINDEX: 'true'
       - name: Prefisso della sottocartella del repository
         run: node scripts/prefix-base.mjs "/${GITHUB_REPOSITORY#*/}"
+      - name: Verifica metadati e immagine social
+        run: node scripts/check-metadata.mjs "https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*/}/" --noindex
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
