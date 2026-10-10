@@ -31,13 +31,11 @@ npm run build        # genera il sito in dist/
 
 ## Pubblicazione
 
-**GitHub Pages (copia di anteprima).** A ogni push su `main` il workflow `.github/workflows/pages.yml` costruisce il sito e lo pubblica su `https://NOME.github.io/traspogru-sito/`. In quella build:
-- i percorsi vengono prefissati con `/traspogru-sito` (`scripts/prefix-base.mjs`), perché il sito vive in una sottocartella;
-- la copia è **esclusa dall'indicizzazione** (`noindex`) e senza sitemap, finché non c'è il dominio ufficiale.
+**GitHub Pages (dominio ufficiale).** A ogni push su `main` il workflow `.github/workflows/pages.yml` costruisce il sito per `https://www.traspogru.it/`. La build usa i percorsi alla radice, genera la sitemap e consente l'indicizzazione delle pagine; la pagina 404 resta `noindex`. Prima della pubblicazione verifica canonical, Open Graph, immagine social e navigazione.
 
-Prima volta: *Settings → Pages → Build and deployment → Source: **GitHub Actions***.
+Configurazione: *Settings → Pages → Build and deployment → Source: **GitHub Actions***, dominio personalizzato `www.traspogru.it` e **Enforce HTTPS**. Su Aruba, `www` deve essere un CNAME verso `alberico1990.github.io`; il dominio senza `www` deve puntare agli indirizzi A di GitHub Pages. GitHub reindirizza gli indirizzi alternativi al dominio ufficiale.
 
-**Dominio ufficiale (traspogru.it).** Si usa la build normale (`npm run build`, cartella `dist/`) su un hosting alla radice del dominio, per esempio Cloudflare Pages; i percorsi restano quelli di default.
+**Anteprima in sottocartella.** La configurazione conserva il supporto alla build con `GITHUB_PAGES=true`, `PUBLIC_NOINDEX=true`, `GITHUB_REPOSITORY_OWNER` e `GITHUB_REPOSITORY`. In quel caso eseguire dopo la build `node scripts/prefix-base.mjs /traspogru-sito` e verificare con `node scripts/check-metadata.mjs https://alberico1990.github.io/traspogru-sito/ --noindex`. In Git Bash usare `MSYS_NO_PATHCONV=1` per il comando di prefisso. Questa modalità non è usata dal workflow ufficiale.
 
 ## Note
 

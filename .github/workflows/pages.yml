@@ -24,15 +24,13 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: Build
+      - name: Build per il dominio ufficiale
         run: npm run build
         env:
-          GITHUB_PAGES: 'true'
-          PUBLIC_NOINDEX: 'true'
-      - name: Prefisso della sottocartella del repository
-        run: node scripts/prefix-base.mjs "/${GITHUB_REPOSITORY#*/}"
+          GITHUB_PAGES: 'false'
+          PUBLIC_NOINDEX: 'false'
       - name: Verifica metadati e immagine social
-        run: node scripts/check-metadata.mjs "https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*/}/" --noindex
+        run: node scripts/check-metadata.mjs "https://www.traspogru.it/"
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
