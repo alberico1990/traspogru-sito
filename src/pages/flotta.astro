@@ -82,7 +82,7 @@ const principi = [
           </ul>
         </div>
         <figure class="clip appare">
-          <video autoplay muted loop playsinline preload="metadata" poster="/video/carrelli-16t-poster.jpg" aria-label="Un carrello elevatore da 16 tonnellate carica dei tubi su un camion">
+          <video controls muted loop playsinline preload="metadata" poster="/video/carrelli-16t-poster.jpg" aria-label="Un carrello elevatore da 16 tonnellate carica dei tubi su un camion" data-video-carrelli>
             <source src="/video/carrelli-16t-av1.mp4" type='video/mp4; codecs="av01.0.05M.08"' />
             <source src="/video/carrelli-16t-h264.mp4" type="video/mp4" />
           </video>
@@ -111,6 +111,26 @@ const principi = [
 
   <InvitoPreventivo />
 </Base>
+
+<script>
+  const video = document.querySelector<HTMLVideoElement>('[data-video-carrelli]');
+  if (video) {
+    const movimentoRidotto = matchMedia('(prefers-reduced-motion: reduce)');
+    // Nessun autoplay nell'HTML: con movimento ridotto o senza JS resta il poster.
+    // I controlli nativi permettono sempre di avviare e fermare il video.
+    if (!movimentoRidotto.matches) {
+      video.autoplay = true;
+      video.play().catch(() => {}); // Se il browser lo blocca, resta disponibile Play.
+    }
+    movimentoRidotto.addEventListener('change', ({ matches }) => {
+      if (matches) {
+        video.autoplay = false;
+        video.pause();
+      }
+      // Non riavviare automaticamente un video che l'utente ha messo in pausa.
+    });
+  }
+</script>
 
 <style>
   .blocco { padding-bottom: var(--sezione); }

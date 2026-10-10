@@ -92,7 +92,7 @@ const titolo = tipo === 'preventivo' ? 'Richiesta di preventivo dal sito' : 'Can
         modulo.classList.add('verificato');
         esito.textContent = 'Compila i campi evidenziati.';
         esito.classList.add('errore');
-        modulo.querySelector<HTMLElement>(':invalid')?.focus();
+        modulo.querySelector<HTMLElement>('input:invalid, select:invalid, textarea:invalid')?.focus();
         return;
       }
       // messaggio ordinato: una riga per campo compilato
