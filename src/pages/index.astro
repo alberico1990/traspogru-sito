@@ -64,7 +64,7 @@ const lavori = [
       </div>
       <div class="griglia-settori">
         {settori.map((s, i) => (
-          <Scheda titolo={s.titolo} indice={`Settore ${String(i + 1).padStart(2, '0')}`} href={`/settori#settore-${i + 1}`} foto={s.foto} alt={s.alt}>
+          <Scheda titolo={s.titolo} indice={`Settore ${String(i + 1).padStart(2, '0')}`} href={`/settori/#settore-${i + 1}`} foto={s.foto} alt={s.alt}>
             <p>{s.testo}</p>
           </Scheda>
         ))}
@@ -96,7 +96,7 @@ const lavori = [
           </figure>
         ))}
       </div>
-      <div class="coda"><Pulsante href="/lavori" variante="secondario">Tutti i lavori</Pulsante></div>
+      <div class="coda"><Pulsante href="/lavori/" variante="secondario">Tutti i lavori</Pulsante></div>
     </div>
   </section>
 
@@ -108,7 +108,7 @@ const lavori = [
       <h2 id="autisti-titolo">Guida un camion <em>di cui</em> andare fiero.</h2>
       <p class="lead">Cerchiamo autisti con patente CE e CQC merci. Mezzi recenti e curati, lavoro serio, una squadra che ci tiene.</p>
       <div class="azioni">
-        <Pulsante href="/lavora-con-noi">Candidati</Pulsante>
+        <Pulsante href="/lavora-con-noi/">Candidati</Pulsante>
         <Pulsante href={whatsappLink('Buongiorno, vorrei candidarmi come autista. Patente: … CQC: … Esperienza: …')} variante="testo" esterno>Scrivici su WhatsApp</Pulsante>
       </div>
     </div>
@@ -134,7 +134,7 @@ const lavori = [
           <span><span class="etichetta">Chiamaci</span><strong>{SITO.telefonoVisibile}</strong></span>
           <span class="freccia" aria-hidden="true">→</span>
         </a>
-        <a class="canale modulo" href="/contatti">
+        <a class="canale modulo" href="/contatti/">
           <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v16H4zM8 9h8M8 13h8M8 17h5" /></svg>
           <span><span class="etichetta">Guidato</span><strong>Modulo di preventivo</strong></span>
           <span class="freccia" aria-hidden="true">→</span>

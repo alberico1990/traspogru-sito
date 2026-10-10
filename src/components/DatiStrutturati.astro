@@ -3,7 +3,7 @@
 import { SITO } from '../config/sito';
 import { FAQ } from '../data/faq';
 
-interface Props { tipo: 'azienda' | 'faq' | 'lavoro' }
+interface Props { tipo: 'azienda' | 'faq' | 'lavoro' | 'servizio' }
 const { tipo } = Astro.props;
 const i = SITO.indirizzo;
 
@@ -13,7 +13,7 @@ const azienda = {
   name: SITO.ragioneSociale,
   alternateName: SITO.marchio,
   description: 'Trasporto di lamiere fuori sagoma su semirimorchi a piano inclinato, anche in regime di trasporto eccezionale, in tutta Italia.',
-  url: SITO.dominio,
+  url: `${SITO.dominio}/`,
   logo: `${SITO.dominio}/icona-app-512.png`,
   image: `${SITO.dominio}/og.jpg`,
   telephone: SITO.telefono,
@@ -21,7 +21,6 @@ const azienda = {
   vatID: `IT${SITO.legale.piva}`,
   taxID: SITO.legale.piva,
   address: { '@type': 'PostalAddress', streetAddress: i.via, postalCode: i.cap, addressLocality: i.citta, addressRegion: i.provincia, addressCountry: 'IT' },
-  geo: { '@type': 'GeoCoordinates', latitude: i.lat, longitude: i.lng },
   areaServed: { '@type': 'Country', name: 'Italia' },
   sameAs: [SITO.facebook],
   makesOffer: [
@@ -31,7 +30,28 @@ const azienda = {
 };
 
 const dati = {
-  azienda: { '@context': 'https://schema.org', ...azienda },
+  azienda: {
+    '@context': 'https://schema.org',
+    '@graph': [azienda, {
+      '@type': 'WebSite',
+      '@id': `${SITO.dominio}/#sito`,
+      url: `${SITO.dominio}/`,
+      name: SITO.marchio,
+      inLanguage: 'it-IT',
+      publisher: { '@id': azienda['@id'] },
+    }],
+  },
+  servizio: {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    '@id': `${SITO.dominio}/specializzazione/#servizio`,
+    name: 'Trasporto lamiere fuori sagoma su piano inclinato',
+    serviceType: 'Trasporto di lamiere di grande formato',
+    description: 'Trasporto di lamiere su semirimorchi a piano inclinato in tutta Italia, isole comprese, con partenza da Castellammare di Stabia in Campania. Trasporti eccezionali quando necessari in base alle caratteristiche del carico.',
+    url: `${SITO.dominio}/specializzazione/`,
+    provider: { '@id': azienda['@id'] },
+    areaServed: { '@type': 'Country', name: 'Italia' },
+  },
   faq: {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -52,4 +72,4 @@ const dati = {
 }[tipo];
 ---
 
-<script type="application/ld+json" set:html={JSON.stringify(dati)} />
+<script type="application/ld+json" set:html={JSON.stringify(dati).replace(/</g, '\\u003c')} />

@@ -6,18 +6,18 @@ interface Props { suHero?: boolean }
 const { suHero = false } = Astro.props;
 
 const voci = [
-  { href: '/specializzazione', testo: 'Specializzazione' },
-  { href: '/settori', testo: 'Settori' },
-  { href: '/flotta', testo: 'Flotta' },
-  { href: '/lavori', testo: 'Lavori' },
-  { href: '/lavora-con-noi', testo: 'Lavora con noi' },
+  { href: '/specializzazione/', testo: 'Specializzazione' },
+  { href: '/settori/', testo: 'Settori' },
+  { href: '/flotta/', testo: 'Flotta' },
+  { href: '/lavori/', testo: 'Lavori' },
+  { href: '/lavora-con-noi/', testo: 'Lavora con noi' },
 ];
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const percorso = Astro.url.pathname;
 const relativo = base && (percorso === base || percorso.startsWith(`${base}/`)) ? percorso.slice(base.length) : percorso;
 const attuale = relativo.replace(/(index)?\.html$/, '').replace(/\/$/, '');
 const inHome = attuale === '';
-const corrente = (href: string) => (href === '/' ? inHome : attuale === href) ? 'page' : undefined;
+const corrente = (href: string) => (href === '/' ? inHome : attuale === href.replace(/\/$/, '')) ? 'page' : undefined;
 const icoCasa = 'M3 11.5 12 4l9 7.5M5.5 9.5V20h5v-5.5h3V20h5V9.5';
 ---
 
@@ -44,7 +44,7 @@ const icoCasa = 'M3 11.5 12 4l9 7.5M5.5 9.5V20h5v-5.5h3V20h5V9.5';
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d={icoCasa} /></svg><span>Home</span>
         </a>
       )}
-      <Pulsante href="/contatti" variante="primario" piccolo>Preventivo</Pulsante>
+      <Pulsante href="/contatti/" variante="primario" piccolo>Preventivo</Pulsante>
       <button class="apri-menu" popovertarget="menu-mobile" aria-label="Apri il menu">
         <span></span><span></span>
       </button>
@@ -55,7 +55,7 @@ const icoCasa = 'M3 11.5 12 4l9 7.5M5.5 9.5V20h5v-5.5h3V20h5V9.5';
   <nav id="menu-mobile" popover aria-label="Menu" class="menu-mobile tema-scuro">
     <button class="chiudi" popovertarget="menu-mobile" popovertargetaction="hide" aria-label="Chiudi il menu">×</button>
     <ul>
-      {[{ href: '/', testo: 'Home' }, ...voci, { href: '/contatti', testo: 'Contatti' }].map((v, i) => (
+      {[{ href: '/', testo: 'Home' }, ...voci, { href: '/contatti/', testo: 'Contatti' }].map((v, i) => (
         <li style={`--i:${i}`}>
           <a href={v.href} aria-current={corrente(v.href)}>
             <span class="etichetta">{String(i + 1).padStart(2, '0')}</span>{v.testo}

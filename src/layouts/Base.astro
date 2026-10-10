@@ -24,10 +24,10 @@ const { titolo, descrizione, headerSuHero = false, noindex: noindexPagina = fals
 // la copia su GitHub Pages (PUBLIC_NOINDEX=true) non deve essere indicizzata: l'indirizzo ufficiale sara' il dominio del cliente
 const noindex = noindexPagina || import.meta.env.PUBLIC_NOINDEX === 'true';
 const titoloCompleto = titolo === SITO.marchio ? `${SITO.marchio} · Trasporto lamiere fuori sagoma in tutta Italia` : `${titolo} | ${SITO.marchio}`;
-// l'indirizzo canonico e' quello pulito (/flotta, /), senza index.html ne' barra finale
+// GitHub Pages serve le pagine come directory: canonical e sitemap devono usare lo stesso URL finale.
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const percorsoPulito = Astro.url.pathname.replace(/(index)?\.html$/, '').replace(/\/$/, '');
-const percorso = percorsoPulito === base ? `${base}/` : percorsoPulito || '/';
+const percorso = percorsoPulito.endsWith('/404') ? `${percorsoPulito}.html` : `${percorsoPulito}/`;
 const canonico = new URL(percorso, Astro.site ?? SITO.dominio).toString();
 // Le immagini in public sono relative alla radice del progetto, anche su Pages.
 const radiceSito = new URL(`${base}/`, Astro.site ?? SITO.dominio);
