@@ -22,6 +22,11 @@ function check(file) {
   const route = name === 'index.html' ? '' : name.replace(/\/index\.html$|\.html$/g, '');
   const expected = new URL(route === '404' ? '404.html' : route ? `${route}/` : '', site).href;
   const html = readFileSync(file, 'utf8');
+  // File di prova della proprieta' fornito da Search Console, non una pagina del sito.
+  if (/^google[0-9a-f]+\.html$/.test(name)) {
+    assert.equal(html.trim(), `google-site-verification: ${name}`, `${name}: verifica Google alterata`);
+    return;
+  }
   const head = html.match(/<head\b[^>]*>([\s\S]*?)<\/head>/i)?.[1];
   assert.ok(head, `${name}: head mancante`);
   const tags = [...head.matchAll(/<(?:meta|link)\b[^>]*>/gi)].map((m) => attributes(m[0]));

@@ -27,7 +27,7 @@ npm run build        # genera il sito in dist/
 | Intro della Home (accesa/spenta: `intro` in `sito.ts`) | `src/components/home/Intro.astro` |
 | Mappa delle rotte | `src/components/home/MappaRotte.astro`, dati in `src/data/mappa.json` |
 | Nastro segnaletico, logo Fincantieri | `src/components/Nastro.astro`, `LogoFincantieri.astro` |
-| Intestazioni di sicurezza e cache (Cloudflare Pages) | `public/_headers` |
+| File storico per intestazioni Cloudflare (ignorato da GitHub Pages) | `public/_headers` |
 
 ## Pubblicazione
 
