@@ -19,7 +19,7 @@ const mappe = [
 ---
 
 <Base
-  titolo="Contatti e preventivo"
+  titolo="Preventivo trasporto lamiere e contatti"
   descrizione="Richiedi un preventivo per il trasporto di lamiere fuori sagoma: WhatsApp, telefono 349 050 0663, email o modulo guidato. Traspogru, Via Schito 177, Castellammare di Stabia."
   headerSuHero
 >
@@ -47,6 +47,21 @@ const mappe = [
       <div class="colonna-modulo">
         <IntestazioneSezione numero="01" etichetta="Modulo di preventivo" titolo="Descrivici il <em>trasporto</em>." />
         <p class="lead intro">Compila i campi (quelli con * sono obbligatori): prepariamo noi il messaggio, tu lo invii con WhatsApp o per email.</p>
+        <details class="guida-preventivo">
+          <summary>Cosa preparare per un preventivo di trasporto lamiere</summary>
+          <div>
+            <p>Per valutare il carico e organizzare il viaggio, raccogli queste informazioni:</p>
+            <ul>
+              <li><strong>Materiale e quantità:</strong> tipo di lamiera, numero di lastre e presenza di imballaggi.</li>
+              <li><strong>Misure e peso:</strong> lunghezza, larghezza e spessore delle lastre, peso del singolo elemento se disponibile e peso complessivo.</li>
+              <li><strong>Partenza e destinazione:</strong> indirizzi, accessi al piazzale o al cantiere ed eventuali limitazioni di manovra.</li>
+              <li><strong>Carico e scarico:</strong> mezzi disponibili sul posto e referenti con cui coordinarsi.</li>
+              <li><strong>Date:</strong> quando il materiale è pronto, consegna richiesta ed eventuali viaggi ricorrenti.</li>
+            </ul>
+            <p>Puoi inserire i dettagli nel campo Note. Foto e disegni si allegano direttamente in WhatsApp o nell’email, dopo l’apertura del messaggio. Se non hai ancora tutti i dati, indica quelli disponibili: la configurazione del trasporto sarà valutata sul carico effettivo.</p>
+            <a href="/specializzazione/">Scopri come trasportiamo le lamiere su piano inclinato →</a>
+          </div>
+        </details>
         <Modulo tipo="preventivo" />
       </div>
 
@@ -100,6 +115,11 @@ const mappe = [
   .blocco { padding-bottom: var(--sezione); scroll-margin-top: 40px; }
   .riga { display: grid; grid-template-columns: 1.5fr 1fr; gap: 3rem 5rem; align-items: start; }
   .intro { margin-bottom: 2.5rem; }
+  .guida-preventivo { margin-bottom: 2.5rem; border: 1px solid var(--linea); padding: 1.1rem 1.2rem; }
+  .guida-preventivo summary { cursor: pointer; font-weight: 600; }
+  .guida-preventivo > div { padding-top: 1rem; }
+  .guida-preventivo ul { padding-left: 1.3rem; display: grid; gap: 0.65rem; }
+  .guida-preventivo a { color: var(--blu); }
   .sede {
     position: sticky; top: 110px; display: grid; gap: 0.9rem; justify-items: start;
     background: var(--notte-900); color: #e9eef4; padding: 2.5rem;

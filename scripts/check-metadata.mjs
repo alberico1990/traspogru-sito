@@ -36,6 +36,9 @@ function check(file) {
   assert.equal(tags.find((a) => a.property === 'og:url')?.content, expected, `${name}: og:url errato`);
   const image = new URL(tags.find((a) => a.property === 'og:image')?.content);
   assert.equal(image.origin, site.origin, `${name}: origine immagine errata`);
+  assert.equal(tags.find((a) => a.name === 'twitter:image')?.content, image.href, `${name}: anteprima Twitter incoerente`);
+  assert.ok(tags.find((a) => a.property === 'og:image:alt')?.content, `${name}: descrizione immagine social mancante`);
+  assert.equal(tags.find((a) => a.name === 'twitter:image:alt')?.content, tags.find((a) => a.property === 'og:image:alt')?.content, `${name}: descrizioni social incoerenti`);
   assert.ok(image.pathname.startsWith(site.pathname), `${name}: immagine fuori dalla sottocartella`);
   const asset = resolve(root, decodeURIComponent(image.pathname.slice(site.pathname.length)));
   assert.ok(asset.startsWith(root + sep) && existsSync(asset) && statSync(asset).isFile(), `${name}: immagine social inesistente`);
@@ -43,8 +46,19 @@ function check(file) {
   assert.equal(/\bnoindex\b/i.test(robots), noindex || route === '404', `${name}: noindex errato`);
   pageUrls.add(expected);
   if (!/\bnoindex\b/i.test(robots)) canonicalsForSitemap.add(expected);
-  for (const match of html.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi)) {
-    assert.ok(JSON.parse(match[1])['@context'], `${name}: JSON-LD non valido`);
+  const datiStrutturati = [...html.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi)]
+    .map((match) => JSON.parse(match[1]));
+  for (const dati of datiStrutturati) assert.ok(dati['@context'], `${name}: JSON-LD non valido`);
+  const percorso = html.match(/<nav\b[^>]*aria-label="Percorso"[^>]*>([\s\S]*?)<\/nav>/)?.[1];
+  const breadcrumbs = datiStrutturati.filter((dati) => dati['@type'] === 'BreadcrumbList');
+  assert.equal(breadcrumbs.length, percorso ? 1 : 0, `${name}: percorso strutturato diverso da quello visibile`);
+  if (percorso) {
+    const voci = breadcrumbs[0].itemListElement;
+    assert.equal(voci.length, 2, `${name}: gerarchia del percorso errata`);
+    assert.deepEqual(voci.map((voce) => voce.position), [1, 2], `${name}: ordine del percorso errato`);
+    assert.equal(voci[0].item, site.href, `${name}: home del percorso errata`);
+    assert.equal(voci[1].item, expected, `${name}: pagina del percorso non canonica`);
+    assert.equal(voci[1].name, percorso.match(/<span\b[^>]*aria-current="page"[^>]*>([^<]+)<\/span>/)?.[1], `${name}: etichetta del percorso incoerente`);
   }
   // Il cambio di base non deve alterare la voce corrente della navigazione.
   for (const match of html.matchAll(/<a\b[^>]*>/gi)) {

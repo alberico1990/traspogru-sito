@@ -19,8 +19,9 @@ interface Props {
   noindex?: boolean;
   /** immagine per anteprime social (percorso in /public) */
   immagine?: string;
+  immagineAlt?: string;
 }
-const { titolo, descrizione, headerSuHero = false, noindex: noindexPagina = false, immagine = '/og.jpg' } = Astro.props;
+const { titolo, descrizione, headerSuHero = false, noindex: noindexPagina = false, immagine = '/og.jpg', immagineAlt = 'Traspogru: logo e camion Scania arancione. Lamiere fuori sagoma in tutta Italia.' } = Astro.props;
 // la copia su GitHub Pages (PUBLIC_NOINDEX=true) non deve essere indicizzata: l'indirizzo ufficiale sara' il dominio del cliente
 const noindex = noindexPagina || import.meta.env.PUBLIC_NOINDEX === 'true';
 const titoloCompleto = titolo === SITO.marchio ? `${SITO.marchio} · Trasporto lamiere fuori sagoma in tutta Italia` : `${titolo} | ${SITO.marchio}`;
@@ -54,9 +55,12 @@ const img = new URL(immagine.startsWith('/') && !immagine.startsWith('//') ? imm
     <meta property="og:description" content={descrizione} />
     <meta property="og:url" content={canonico} />
     <meta property="og:image" content={img} />
+    <meta property="og:image:alt" content={immagineAlt} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={img} />
+    <meta name="twitter:image:alt" content={immagineAlt} />
 
     <link rel="preload" href={fontTitoli} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={fontTesto} as="font" type="font/woff2" crossorigin />
