@@ -44,6 +44,11 @@ function check(file) {
   assert.ok(asset.startsWith(root + sep) && existsSync(asset) && statSync(asset).isFile(), `${name}: immagine social inesistente`);
   const robots = tags.find((a) => a.name === 'robots')?.content ?? '';
   assert.equal(/\bnoindex\b/i.test(robots), noindex || route === '404', `${name}: noindex errato`);
+  const sitemapLinks = tags.filter((a) => a.rel === 'sitemap');
+  assert.equal(sitemapLinks.length, noindex || route === '404' ? 0 : 1, `${name}: riferimento sitemap errato`);
+  if (sitemapLinks.length) {
+    assert.equal(new URL(sitemapLinks[0].href, site).href, new URL('sitemap-0.xml', site).href, `${name}: sitemap diversa da quella inviata a Google`);
+  }
   pageUrls.add(expected);
   if (!/\bnoindex\b/i.test(robots)) canonicalsForSitemap.add(expected);
   const datiStrutturati = [...html.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi)]
@@ -94,5 +99,13 @@ if (!noindex) {
   const sitemapUrls = readdirSync(root).filter((name) => /^sitemap-\d+\.xml$/.test(name))
     .flatMap((name) => [...readFileSync(join(root, name), 'utf8').matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]));
   assert.deepEqual(new Set(sitemapUrls), canonicalsForSitemap, 'Sitemap e canonical delle pagine indicizzabili non coincidono');
+  // Il sito usa una sola sitemap, generata da Astro e letta direttamente da Google.
+  // Se in futuro viene suddivisa, fermare la pubblicazione finche i riferimenti non sono aggiornati.
+  const sitemapDiretta = readFileSync(join(root, 'sitemap-0.xml'), 'utf8');
+  const urlDiretti = [...sitemapDiretta.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+  assert.deepEqual(new Set(urlDiretti), canonicalsForSitemap, 'La sitemap diretta non contiene tutte le pagine: aggiornare i riferimenti prima di pubblicare');
+  const dichiarazioniRobots = readFileSync(join(root, 'robots.txt'), 'utf8')
+    .split(/\r?\n/).filter((line) => /^Sitemap:/i.test(line)).map((line) => line.replace(/^Sitemap:\s*/i, '').trim());
+  assert.deepEqual(dichiarazioniRobots, [new URL('sitemap-0.xml', site).href], 'robots.txt deve indicare la sitemap diretta verificata');
 }
 console.log(`${pages} pagine: canonical, Open Graph, immagine social, noindex e navigazione verificati.`);

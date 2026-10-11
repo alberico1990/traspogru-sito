@@ -68,7 +68,7 @@ const img = new URL(immagine.startsWith('/') && !immagine.startsWith('//') ? imm
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
-    {!noindex && <link rel="sitemap" href="/sitemap-index.xml" />}
+    {!noindex && <link rel="sitemap" href="/sitemap-0.xml" />}
     <script is:inline>
       // comparsa degli elementi: su telefono o senza scroll-driven la gestisce lo script qui sotto
       if (!matchMedia('(prefers-reduced-motion: reduce)').matches && (matchMedia('(max-width: 899px)').matches || !CSS.supports('animation-timeline: view()'))) {
