@@ -2,18 +2,27 @@
 // Cookie policy del sito.
 import Testo from '../layouts/Testo.astro';
 import { SITO } from '../config/sito';
+const analytics = /^G-[A-Z0-9]+$/.test(import.meta.env.PUBLIC_GA_ID ?? '') && import.meta.env.PUBLIC_NOINDEX !== 'true';
 ---
 
-<Testo titolo="Cookie policy" descrizione="Cookie policy del sito Traspogru: nessun cookie di profilazione, nessuna statistica, nessun servizio di terze parti incorporato." etichetta="Documenti legali" aggiornato="22 settembre 2026">
+<Testo titolo="Cookie policy" descrizione="Cookie e preferenze del sito Traspogru: informazioni sull’uso delle statistiche e sulla gestione del consenso." etichetta="Documenti legali" aggiornato="11 ottobre 2026">
   <h2>In breve</h2>
-  <p>Questo sito <strong>non usa cookie di profilazione né cookie di terze parti</strong> e non mostra pubblicità. Per questo non trovi un banner che ti chiede il consenso.</p>
+  <p>{analytics ? 'Il sito usa cookie di Google Analytics solo se accetti le statistiche. Puoi rifiutare con la stessa facilità e continuare a usare il sito.' : 'Il sito non usa cookie di profilazione né strumenti di statistica.'} Non mostriamo pubblicità.</p>
 
   <h2>Cosa usiamo</h2>
   <ul>
-    <li><strong>Nessuna statistica</strong>: non misuriamo le visite e non installiamo strumenti di analisi.</li>
+    <li><strong>Statistiche</strong>: {analytics ? 'Google Analytics 4 si carica soltanto dopo il consenso. Raccoglie informazioni sulle visite e sulla loro provenienza; le funzioni pubblicitarie sono disattivate.' : 'non installiamo strumenti di analisi.'}</li>
     <li><strong>Nessuna mappa o video incorporati da terzi</strong>: i link a Google Maps, Apple Mappe, Waze, WhatsApp e Facebook si aprono solo se li clicchi, e da quel momento valgono le informative di quei servizi.</li>
     <li><strong>Caratteri tipografici</strong> ospitati sul nostro server: nessuna richiesta verso servizi esterni.</li>
   </ul>
+  {analytics && <>
+    <h2>Cookie e durata</h2>
+    <ul>
+      <li><strong>_ga e _ga_*</strong>: cookie Google Analytics per distinguere visitatori e sessioni, durata impostata a 180 giorni senza rinnovo a ogni visita.</li>
+      <li><strong>traspogru.analytics.v1</strong>: preferenza tecnica conservata nel localStorage del browser per 180 giorni, sia per il consenso sia per il rifiuto. Non viene inviata a Google.</li>
+    </ul>
+    <p>Prima della scelta e dopo il rifiuto non carichiamo Google Analytics né inviamo misurazioni a Google. “Preferenze cookie” nel piè di pagina permette di cambiare scelta in qualsiasi momento. Se revochi il consenso, cancelliamo i cookie Analytics accessibili da questo sito e ricarichiamo la pagina per fermare lo strumento.</p>
+  </>}
 
   <h2>Come gestire i cookie</h2>
   <p>Puoi comunque cancellare o bloccare i cookie dalle impostazioni del tuo browser. Il sito continuerà a funzionare normalmente.</p>

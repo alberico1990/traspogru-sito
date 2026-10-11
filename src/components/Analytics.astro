@@ -1,0 +1,32 @@
+---
+// Nessuna richiesta a Google prima del consenso, né nelle build di anteprima.
+const id = import.meta.env.PUBLIC_GA_ID ?? '';
+const enabled = /^G-[A-Z0-9]+$/.test(id) && import.meta.env.PUBLIC_NOINDEX !== 'true';
+---
+{enabled && <>
+  <div id="analytics-settings" data-measurement-id={id}>
+    <dialog id="analytics-consent" aria-labelledby="analytics-title" aria-describedby="analytics-description">
+      <h2 id="analytics-title">Statistiche del sito</h2>
+      <p id="analytics-description">Possiamo usare Google Analytics per capire quali pagine vengono visitate e da dove arrivano le visite, anche da Facebook e Instagram. Si attiva solo se accetti. Il sito funziona anche se rifiuti.</p>
+      <p><a href="/cookie/">Cookie e dettagli</a> · <a href="/privacy/">Privacy</a></p>
+      <div class="scelte">
+        <button type="button" data-analytics-choice="denied">Rifiuta statistiche</button>
+        <button type="button" data-analytics-choice="granted">Accetta statistiche</button>
+      </div>
+    </dialog>
+  </div>
+  <script>
+    import { installAnalytics } from '../scripts/analytics';
+    installAnalytics();
+  </script>
+</>}
+<style>
+  dialog { position: fixed; inset: auto 1rem 1rem; width: min(640px, calc(100% - 2rem)); max-height: 85dvh; overflow: auto; margin: 0 auto; padding: 1.5rem; color: #fff; background: #071427; border: 1px solid #c5ceda; border-radius: 8px; z-index: 99999; }
+  dialog::backdrop { background: rgb(0 0 0 / 0.35); }
+  h2 { font-family: var(--f-testo); font-size: 1.2rem; margin: 0 0 0.8rem; }
+  p { font-size: 0.95rem; line-height: 1.5; margin: 0 0 1rem; }
+  a { color: #fff; text-decoration: underline; }
+  .scelte { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+  button { flex: 1; min-height: 48px; padding: 0.7rem 1rem; font: inherit; font-weight: 600; color: #071427; background: #fff; border: 2px solid #fff; border-radius: 4px; cursor: pointer; }
+  button:focus-visible, a:focus-visible { outline: 3px solid #ffd43b; outline-offset: 4px; }
+</style>

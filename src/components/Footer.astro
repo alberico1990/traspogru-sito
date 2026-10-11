@@ -50,7 +50,7 @@ const gradi = (v: number, pos: string, neg: string) => {
       <p>
         © {anno} {SITO.ragioneSociale} · Sede legale {legale.sedeLegale} · P.IVA {legale.piva} · REA {legale.rea}{legale.capitaleSociale && ` · Capitale sociale ${legale.capitaleSociale}`} · Iscrizione Albo Autotrasportatori {legale.albo}
       </p>
-      <p class="link-legali"><a href="/privacy/">Privacy</a> <a href="/cookie/">Cookie</a></p>
+      <p class="link-legali"><a href="/privacy/">Privacy</a> <a href="/cookie/">Cookie</a> <button type="button" data-open-analytics hidden>Preferenze cookie</button></p>
     </div>
   </div>
 </footer>
@@ -68,6 +68,9 @@ const gradi = (v: number, pos: string, neg: string) => {
   .legale { display: flex; justify-content: space-between; gap: 2rem; padding-top: 1.5rem; font-size: 0.8rem; color: var(--testo-tenue); }
   .legale p { max-width: none; margin: 0; }
   .link-legali { display: flex; gap: 1.2rem; flex-shrink: 0; }
+  .link-legali { flex-wrap: wrap; }
+  .link-legali button { border: 0; padding: 0; background: none; color: inherit; font: inherit; text-decoration: underline; cursor: pointer; }
+  .link-legali button[hidden] { display: none; }
   @media (min-width: 900px) { .legale { padding-right: 96px; } }
   @media (max-width: 860px) {
     .alto { grid-template-columns: 1fr 1fr; }

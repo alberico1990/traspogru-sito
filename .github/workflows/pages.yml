@@ -29,6 +29,9 @@ jobs:
         env:
           GITHUB_PAGES: 'false'
           PUBLIC_NOINDEX: 'false'
+          PUBLIC_GA_ID: 'G-TWW2KT072T'
+      - name: Verifica consenso Analytics
+        run: node scripts/check-analytics.mjs
       - name: Verifica metadati e immagine social
         run: node scripts/check-metadata.mjs "https://www.traspogru.it/"
       - uses: actions/upload-pages-artifact@v3

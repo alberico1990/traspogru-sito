@@ -3,6 +3,7 @@
 import Testo from '../layouts/Testo.astro';
 import { SITO } from '../config/sito';
 const L = SITO.legale;
+const analytics = /^G-[A-Z0-9]+$/.test(import.meta.env.PUBLIC_GA_ID ?? '') && import.meta.env.PUBLIC_NOINDEX !== 'true';
 ---
 
 <Testo titolo="Informativa privacy" descrizione="Informativa sul trattamento dei dati personali del sito Traspogru, ai sensi del Regolamento UE 2016/679 (GDPR)." etichetta="Documenti legali" aggiornato="11 ottobre 2026">
@@ -40,7 +41,13 @@ const L = SITO.legale;
   <p>I dati sono trattati dal personale autorizzato di {SITO.ragioneSociale} e dai fornitori dei servizi utilizzati: GitHub Pages per l’hosting del sito, il fornitore della casella email aziendale e, per i messaggi WhatsApp, Meta Platforms Ireland Ltd. Per il trattamento dei dati tecnici da parte dell’hosting consulta l’<a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">informativa privacy di GitHub</a>. Alcuni di questi fornitori possono trattare dati fuori dall’Unione europea sulla base di decisioni di adeguatezza (EU-US Data Privacy Framework) o clausole contrattuali standard. I dati non vengono venduti né usati per pubblicità.</p>
 
   <h2>Cookie</h2>
-  <p>Il sito non usa cookie di profilazione né strumenti di statistica. Vedi la <a href="/cookie/">cookie policy</a>.</p>
+  <p>{analytics ? 'Il sito usa Google Analytics 4 soltanto dopo il tuo consenso, senza funzioni pubblicitarie.' : 'Il sito non usa cookie di profilazione né strumenti di statistica.'} Vedi la <a href="/cookie/">cookie policy</a>.</p>
+  {analytics && <>
+    <h2>Statistiche delle visite</h2>
+    <p>Con il tuo consenso (art. 6.1.a GDPR) usiamo Google Analytics 4, fornito da Google Ireland Limited, per misurare pagine visitate, sessioni, provenienza delle visite e caratteristiche generali del dispositivo. Google riceve dati tecnici, inclusi identificatori cookie; l’indirizzo IP è usato per la connessione e la localizzazione approssimata, ma non viene registrato né conservato da Google Analytics 4. Il servizio può comportare trasferimenti di dati fuori dall’Unione europea secondo le garanzie contrattuali del fornitore.</p>
+    <p>Non attiviamo Google Signals, personalizzazione degli annunci o raccolta dei contenuti dei moduli. I dati di eventi e utenti sono conservati per 2 mesi; i report aggregati possono rimanere disponibili oltre questo periodo. Puoi rifiutare o revocare il consenso da “Preferenze cookie” nel piè di pagina. La revoca interrompe le misurazioni future; per esercitare i diritti sui dati già raccolti puoi contattarci.</p>
+    <p>Consulta <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener">come Google utilizza i dati dei siti che usano i suoi servizi</a>.</p>
+  </>}
 
   <h2>I tuoi diritti</h2>
   <p>Puoi chiedere in ogni momento accesso, rettifica, cancellazione, limitazione, portabilità dei dati e opporti al trattamento basato sul legittimo interesse (artt. 15–22 GDPR), scrivendo a <a href={`mailto:${SITO.email}`}>{SITO.email}</a>. Hai inoltre diritto di proporre reclamo al Garante per la protezione dei dati personali (<a href="https://www.garanteprivacy.it" target="_blank" rel="noopener">garanteprivacy.it</a>).</p>

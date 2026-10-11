@@ -7,6 +7,7 @@ import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import BarraAzioni from '../components/BarraAzioni.astro';
+import Analytics from '../components/Analytics.astro';
 import { SITO } from '../config/sito';
 import fontTitoli from '@fontsource-variable/big-shoulders-display/files/big-shoulders-display-latin-wght-normal.woff2?url';
 import fontTesto from '@fontsource-variable/schibsted-grotesk/files/schibsted-grotesk-latin-wght-normal.woff2?url';
@@ -91,6 +92,7 @@ const img = new URL(immagine.startsWith('/') && !immagine.startsWith('//') ? imm
     </main>
     <Footer />
     <BarraAzioni />
+    <Analytics />
   </body>
 </html>
 
