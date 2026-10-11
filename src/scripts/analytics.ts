@@ -31,6 +31,7 @@ export function installAnalytics() {
   function start() {
     if (started || choice !== 'granted') return;
     started = true;
+    (win as unknown as Record<string, unknown>)[`ga-disable-${id}`] = false;
     win.dataLayer = win.dataLayer ?? [];
     win.gtag = function () { win.dataLayer!.push(arguments); };
     win.gtag('consent', 'default', { analytics_storage: 'granted', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });

@@ -24,6 +24,7 @@ let f = fixture();
 assert.equal(f.scripts.length, 0); assert.equal(f.dialog.open, true);
 f.buttons.denied(); assert.equal(f.scripts.length, 0); assert.equal(f.dialog.open, false);
 f.events.preferences(); f.buttons.granted(); assert.equal(f.scripts.length, 1);
+assert.equal(f.window['ga-disable-G-TEST123456'], false);
 const config = Array.from(f.window.dataLayer).map(x => Array.from(x)).find(x => x[0] === 'config')[2];
 assert.equal(config.page_location, 'https://www.traspogru.it/contatti/?utm_source=facebook&utm_medium=social');
 assert.equal(config.page_referrer, 'https://l.facebook.com/path');
