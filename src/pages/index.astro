@@ -36,10 +36,10 @@ const settori = [
 ];
 
 const lavori = [
-  { foto: fotoAncora, titolo: 'Un’ancora navale', luogo: 'Per Fincantieri', alt: 'Ancora navale di grandi dimensioni sollevata sul pianale Traspogru', classe: 'alta' },
-  { foto: fotoBarche, titolo: 'Barche storiche in legno', luogo: 'Trasporto conservativo', alt: 'Tre barche in legno caricate sul semirimorchio dello Scania Traspogru', classe: 'larga' },
-  { foto: fotoGru, titolo: 'Una gru a torre', luogo: 'Centro storico', alt: 'Scania Traspogru in una via del centro storico mentre una gru scarica un tronco di gru a torre', classe: 'alta' },
-  { foto: fotoBobine, titolo: 'Bobine di cavo', luogo: 'Cantiere', alt: 'Scania R450 arancione con bobine di cavo legate sul pianale', classe: 'larga' },
+  { foto: fotoAncora, href: '/lavori/#ancora-navale', titolo: 'Un’ancora navale', luogo: 'Per Fincantieri', alt: 'Ancora navale di grandi dimensioni sollevata sul pianale Traspogru', classe: 'alta' },
+  { foto: fotoBarche, href: '/lavori/#barche-storiche-in-legno', titolo: 'Barche storiche in legno', luogo: 'Trasporto conservativo', alt: 'Tre barche in legno caricate sul semirimorchio dello Scania Traspogru', classe: 'larga' },
+  { foto: fotoGru, href: '/lavori/#gru-a-torre-centro-storico', titolo: 'Una gru a torre', luogo: 'Centro storico', alt: 'Scania Traspogru in una via del centro storico mentre una gru scarica un tronco di gru a torre', classe: 'alta' },
+  { foto: fotoBobine, href: '/lavori/#bobine-di-cavo', titolo: 'Bobine di cavo', luogo: 'Cantiere', alt: 'Scania R450 arancione con bobine di cavo legate sul pianale', classe: 'larga' },
 ];
 ---
 
@@ -86,7 +86,7 @@ const lavori = [
       <div class="mosaico">
         {lavori.map((l) => (
           <figure class:list={['lavoro appare', l.classe]}>
-            <Image src={l.foto} alt={l.alt} widths={[480, 800, 1200, 1600]} sizes="(max-width: 900px) 100vw, 50vw" />
+            <a class="link-lavoro" href={l.href} aria-label={l.titolo}><Image src={l.foto} alt={l.alt} widths={[480, 800, 1200, 1600]} sizes="(max-width: 900px) 100vw, 50vw" /></a>
             <figcaption>
               {l.luogo === 'Per Fincantieri'
                 ? <span class="etichetta per-fc">Per <LogoFincantieri altezza="0.95em" /></span>
@@ -164,6 +164,9 @@ const lavori = [
   .lavoro :global(img) { width: 100%; height: auto; object-fit: cover; transition: transform 1s var(--ease-out); }
   .alta :global(img) { aspect-ratio: 1 / 1; }
   .larga :global(img) { aspect-ratio: 16 / 10; }
+  .link-lavoro { display: block; }
+  .lavoro:focus-within { outline: 3px solid var(--giallo); outline-offset: 3px; }
+  .lavoro figcaption { pointer-events: none; }
   .lavoro:hover :global(img) { transform: scale(1.04); }
   .lavoro figcaption {
     position: absolute; left: 0; bottom: 0; right: 0; display: grid; gap: 0.3rem;
