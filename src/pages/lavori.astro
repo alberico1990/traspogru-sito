@@ -35,10 +35,12 @@ const lavori = [
     soluzione: 'Abbiamo affiancato due carrelli elevatori lungo la lastra. Nella prima foto si distinguono le forche dei due mezzi sotto la stessa lamiera. Sollevandola insieme, i carrelli ne hanno sostenuto il peso in punti diversi durante il carico.',
   },
   {
-    foto: ancora, alt: 'Ancora navale di grandi dimensioni sollevata sopra il pianale Traspogru, con la costa sullo sfondo',
+    id: 'ancora-navale',
+    foto: fotoApertura, alt: 'Operatore sul pianale Traspogru accanto alla catena di sollevamento e al fusto dell’ancora',
+    secondaFoto: { src: ancora, alt: 'Ancora navale sospesa sopra il pianale, con le marre rivolte verso l’alto' },
     categoria: 'Per Fincantieri', titolo: 'Un’ancora navale per Fincantieri',
-    sfida: 'Un pezzo pesante, dalla forma irregolare, da caricare in area portuale.',
-    soluzione: 'Sollevamento con gru e imbracatura dedicata, appoggio su travi in legno e fissaggio a catena sul pianale.',
+    sfida: 'In area portuale dovevamo caricare sul pianale una grande ancora navale per Fincantieri. Il fusto allungato e le marre sporgenti rendevano irregolare la superficie di appoggio.',
+    soluzione: 'La prima foto mostra un operatore che prepara l’imbracatura sul pianale. Nella seconda si vedono le marre dell’ancora mentre la gru tiene il pezzo sospeso. Per il trasporto abbiamo appoggiato l’ancora su travi di legno e l’abbiamo fissata al pianale con catene.',
   },
   {
     foto: gru, alt: 'Scania Traspogru in una via del centro storico mentre una gru scarica un tronco di gru a torre',
@@ -85,7 +87,7 @@ const lavori = [
       <ol class="casi">
         {lavori.map((l, i) => (
           <li id={l.id} class:list={['caso appare', { inverso: i % 2 }]}>
-            <div class="foto"><Image src={l.foto} alt={l.alt} widths={[640, 1000, 1400]} sizes="(max-width: 899px) 100vw, 55vw" />
+            <div class:list={['foto', { 'foto-verticali': l.id === 'ancora-navale' }]}><Image src={l.foto} alt={l.alt} widths={[640, 1000, 1400]} sizes="(max-width: 899px) 100vw, 55vw" />
               {l.secondaFoto && <Image src={l.secondaFoto.src} alt={l.secondaFoto.alt} widths={[640, 1000, 1400]} sizes="(max-width: 899px) 100vw, 55vw" />}
             </div>
             <div class="testo">
@@ -115,6 +117,8 @@ const lavori = [
   .foto { overflow: hidden; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 3vw), 0 100%); }
   .inverso .foto { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 3vw)); }
   .foto :global(img) { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; transition: transform 1s var(--ease-out); }
+  .foto-verticali { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.4rem; }
+  .foto-verticali :global(img) { aspect-ratio: auto; }
   .caso:hover .foto :global(img) { transform: scale(1.03); }
   .testo { display: grid; gap: 1.2rem; }
   .testo > .etichetta { margin: 0; }
