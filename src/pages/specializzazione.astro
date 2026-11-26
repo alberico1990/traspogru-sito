@@ -21,7 +21,7 @@ const vantaggi = [
 ];
 
 const fasi = [
-  { n: '01', titolo: 'Richiesta', testo: 'Ci indichi materiale, misure indicative, peso, luoghi e date. Una foto o un disegno aiutano.' },
+  { n: '01', titolo: 'Richiesta', testo: 'Per un preventivo, indica tipo di lamiera, lunghezza, larghezza, spessore e peso del carico. Specifica località di ritiro e consegna e date richieste. Puoi aggiungere una foto o un disegno.' },
   { n: '02', titolo: 'Studio del carico', testo: 'Valutiamo la configurazione migliore e verifichiamo se il viaggio rientra nei limiti di sagoma o serve un’autorizzazione.' },
   { n: '03', titolo: 'Proposta', testo: 'Ricevi un preventivo chiaro, con tempi e modalità di consegna.' },
   { n: '04', titolo: 'Viaggio', testo: 'Carichiamo, fissiamo e consegniamo. Ti teniamo aggiornato fino allo scarico.' },
@@ -39,8 +39,8 @@ const fasi = [
   </Fragment>
   <AperturaPagina
     etichetta="Specializzazione"
-    titolo="Lamiere <em>fuori</em> sagoma, su piano inclinato."
-    sottotitolo="Da Castellammare di Stabia, in provincia di Napoli, trasportiamo lamiere per aziende della Campania e di tutta Italia, isole comprese. Su semirimorchi a piano inclinato, riduciamo l’ingombro del carico durante il viaggio."
+    titolo="Trasporto lamiere <em>fuori sagoma</em>."
+    sottotitolo="Da Castellammare di Stabia trasportiamo lamiere di grande formato, anche di forte spessore, in tutta Italia, isole comprese. Per acciaierie, carpenterie e cantieri navali valutiamo misure e peso delle lastre per scegliere come caricarle."
     foto={fotoApertura}
     alt="DAF XG Traspogru con semirimorchio rosso a piano inclinato coperto"
   />
@@ -49,7 +49,7 @@ const fasi = [
 
   <section class="blocco tema-scuro taglio-alto">
     <div class="contenitore">
-      <IntestazioneSezione numero="02" etichetta="I vantaggi" titolo="Perché <em>inclinata</em> è meglio." />
+      <IntestazioneSezione numero="02" etichetta="I vantaggi" titolo="Perché usare il <em>piano inclinato</em>." />
       <ul class="vantaggi">
         {vantaggi.map((v, i) => (
           <li class="appare">
