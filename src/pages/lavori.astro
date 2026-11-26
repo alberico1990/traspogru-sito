@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import Pulsante from '../components/Pulsante.astro';
 import Base from '../layouts/Base.astro';
 import AperturaPagina from '../components/AperturaPagina.astro';
 import InvitoPreventivo from '../components/InvitoPreventivo.astro';
@@ -18,9 +19,11 @@ import lamiere from '../assets/foto/lamiere-fuori-sagoma-laterale.jpg';
 const lavori = [
   {
     foto: lamiere, alt: 'Scania Traspogru con lamiere fuori sagoma caricate in obliquo e legate con cinghie',
-    categoria: 'Lamiere fuori sagoma', titolo: 'Lastre più larghe del semirimorchio',
-    sfida: 'Lamiere di grande formato che, appoggiate in piano, avrebbero sporto oltre la sagoma.',
-    soluzione: 'Carico su piano inclinato, fissaggio con cinghie e protezioni sugli spigoli: il viaggio è partito con l’ingombro ridotto al minimo.',
+    categoria: 'Lamiere fuori sagoma', titolo: 'Trasporto di lamiere fuori sagoma su piano inclinato',
+    sfida: 'Le lastre da trasportare erano più larghe del semirimorchio. Se le avessimo appoggiate in orizzontale, i bordi avrebbero sporto ai lati del mezzo.',
+    soluzione: 'Abbiamo caricato le lamiere sul piano inclinato del semirimorchio. Nella foto laterale dello Scania si vede come le lastre poggiano oblique sulla struttura: in questa posizione occupano meno spazio in larghezza. Per il viaggio le abbiamo fissate con cinghie, interponendo protezioni nei punti di contatto con gli spigoli.',
+    id: 'lamiere-fuori-sagoma',
+    approfondimento: '/specializzazione/',
   },
   {
     foto: tandem, alt: 'Due carrelli elevatori gialli sollevano insieme una grande lamiera nel piazzale, con altri mezzi sullo sfondo',
@@ -78,7 +81,7 @@ const lavori = [
     <div class="contenitore">
       <ol class="casi">
         {lavori.map((l, i) => (
-          <li class:list={['caso appare', { inverso: i % 2 }]}>
+          <li id={l.id} class:list={['caso appare', { inverso: i % 2 }]}>
             <div class="foto"><Image src={l.foto} alt={l.alt} widths={[640, 1000, 1400]} sizes="(max-width: 899px) 100vw, 55vw" /></div>
             <div class="testo">
               <p class="etichetta"><span class="numero">{String(i + 1).padStart(2, '0')}</span> · {l.categoria}</p>
@@ -88,6 +91,7 @@ const lavori = [
                 <dt class="etichetta">La sfida</dt><dd>{l.sfida}</dd>
                 <dt class="etichetta">Come l’abbiamo risolta</dt><dd>{l.soluzione}</dd>
               </dl>
+              {l.approfondimento && <div><Pulsante href={l.approfondimento} variante="testo">Come trasportiamo le lamiere su piano inclinato</Pulsante></div>}
             </div>
           </li>
         ))}
