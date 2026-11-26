@@ -9,6 +9,7 @@ import LogoFincantieri from '../components/LogoFincantieri.astro';
 import fotoApertura from '../assets/foto/ancora-navale-imbracatura.jpg';
 import ancora from '../assets/foto/ancora-navale-sollevamento.jpg';
 import tandem from '../assets/foto/carrelli-lamiera-sollevata.jpg';
+import vistaPiazzale from '../assets/foto/carrelli-tandem-lamiera.jpg';
 import barche from '../assets/foto/barche-legno-scania.jpg';
 import gru from '../assets/foto/gru-torre-centro-storico.jpg';
 import bobine from '../assets/foto/bobine-cavo-r450.jpg';
@@ -27,9 +28,11 @@ const lavori = [
   },
   {
     foto: tandem, alt: 'Due carrelli elevatori gialli sollevano insieme una grande lamiera nel piazzale, con altri mezzi sullo sfondo',
-    categoria: 'Carrelli elevatori', titolo: 'Una lamiera sollevata in tandem',
-    sfida: 'Una lastra di grandi dimensioni, troppo lunga per essere sollevata da un solo carrello.',
-    soluzione: 'Due carrelli la sollevano insieme, ripartendo il peso su più punti di appoggio: poi la lamiera passa sul semirimorchio.',
+    id: 'lamiera-due-carrelli',
+    secondaFoto: { src: vistaPiazzale, alt: 'Vista laterale del carrello con la lamiera sulle forche e altri mezzi nel piazzale' },
+    categoria: 'Carrelli elevatori', titolo: 'Una lamiera lunga, due carrelli elevatori',
+    sfida: 'Nel piazzale dovevamo trasferire una lamiera di grande formato sul semirimorchio. La sua lunghezza richiedeva più punti di appoggio durante il sollevamento.',
+    soluzione: 'Abbiamo affiancato due carrelli elevatori lungo la lastra. Nella prima foto si distinguono le forche dei due mezzi sotto la stessa lamiera. Sollevandola insieme, i carrelli ne hanno sostenuto il peso in punti diversi durante il carico.',
   },
   {
     foto: ancora, alt: 'Ancora navale di grandi dimensioni sollevata sopra il pianale Traspogru, con la costa sullo sfondo',
@@ -82,7 +85,9 @@ const lavori = [
       <ol class="casi">
         {lavori.map((l, i) => (
           <li id={l.id} class:list={['caso appare', { inverso: i % 2 }]}>
-            <div class="foto"><Image src={l.foto} alt={l.alt} widths={[640, 1000, 1400]} sizes="(max-width: 899px) 100vw, 55vw" /></div>
+            <div class="foto"><Image src={l.foto} alt={l.alt} widths={[640, 1000, 1400]} sizes="(max-width: 899px) 100vw, 55vw" />
+              {l.secondaFoto && <Image src={l.secondaFoto.src} alt={l.secondaFoto.alt} widths={[640, 1000, 1400]} sizes="(max-width: 899px) 100vw, 55vw" />}
+            </div>
             <div class="testo">
               <p class="etichetta"><span class="numero">{String(i + 1).padStart(2, '0')}</span> · {l.categoria}</p>
               <h2>{l.titolo}</h2>
