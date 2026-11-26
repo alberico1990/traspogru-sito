@@ -9,7 +9,7 @@ const titolo = tipo === 'preventivo' ? 'Richiesta di preventivo dal sito' : 'Can
 ---
 
 <form class="modulo" data-modulo data-titolo={titolo} data-whatsapp={SITO.whatsapp} data-email={SITO.email}>
-  <fieldset>
+  <fieldset disabled>
     <legend class="etichetta">I tuoi dati</legend>
     <div class="griglia">
       <label class="campo"><span>Nome e cognome *</span><input name="nome" required autocomplete="name" data-etichetta="Nome" /></label>
@@ -22,7 +22,7 @@ const titolo = tipo === 'preventivo' ? 'Richiesta di preventivo dal sito' : 'Can
   </fieldset>
 
   {tipo === 'preventivo' ? (
-    <fieldset>
+    <fieldset disabled>
       <legend class="etichetta">Il carico</legend>
       <div class="griglia">
         <label class="campo intero"><span>Tipo di carico *</span>
@@ -45,7 +45,7 @@ const titolo = tipo === 'preventivo' ? 'Richiesta di preventivo dal sito' : 'Can
       </div>
     </fieldset>
   ) : (
-    <fieldset>
+    <fieldset disabled>
       <legend class="etichetta">La tua esperienza</legend>
       <div class="griglia">
         <label class="spunta"><input type="checkbox" name="patente_ce" value="sì" data-etichetta="Patente CE" /><span>Ho la patente CE</span></label>
@@ -60,33 +60,30 @@ const titolo = tipo === 'preventivo' ? 'Richiesta di preventivo dal sito' : 'Can
 
   <p class="nota-allegati">
     {tipo === 'preventivo'
-      ? 'Hai foto o disegni del carico? Allegali direttamente nella chat WhatsApp o nell’email che si apre dopo l’invio.'
-      : 'Hai un curriculum? Allegalo nella chat WhatsApp o nell’email che si apre dopo l’invio.'}
+      ? 'Hai foto o disegni del carico? Allegali direttamente nella chat WhatsApp o nell’email che si apre.'
+      : 'Hai un curriculum? Allegalo nella chat WhatsApp o nell’email che si apre.'}
   </p>
 
   <div class="invio">
-    <button type="submit" class="bottone-invio" data-canale="whatsapp">
-      <span>Invia su WhatsApp</span>
+    <button type="submit" disabled class="bottone-invio" data-canale="whatsapp">
+      <span>Prepara su WhatsApp</span>
       <svg viewBox="0 0 20 12" aria-hidden="true"><path d="M0 6h18M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" /></svg>
     </button>
-    <button type="submit" class="bottone-secondario" data-canale="email">Invia per email</button>
+    <button type="submit" disabled class="bottone-secondario" data-canale="email">Prepara email</button>
     <p class="esito" role="status" aria-live="polite" data-esito></p>
   </div>
-  <p class="privacy">I dati che scrivi restano sul tuo dispositivo finché non invii il messaggio da WhatsApp o dalla tua email. Vedi l’<a href="/privacy/">informativa privacy</a>.</p>
-  <noscript><p class="esito errore">Per usare il modulo serve JavaScript. Puoi scriverci su WhatsApp al {SITO.telefonoVisibile} o a {SITO.email}.</p></noscript>
+  <p class="privacy">Quando scegli un canale, i dati compilati vengono passati a WhatsApp o alla tua app di posta per preparare il messaggio. Confermi l’invio nell’app. Vedi l’<a href="/privacy/">informativa privacy</a>.</p>
+  <p class="esito" data-alternativa>Puoi anche <a href={`mailto:${SITO.email}`}>scriverci per email</a> o <a href={`tel:${SITO.telefono}`}>chiamare {SITO.telefonoVisibile}</a>.</p>
 </form>
 
 <script>
   for (const modulo of document.querySelectorAll<HTMLFormElement>('[data-modulo]')) {
     modulo.noValidate = true;
     const esito = modulo.querySelector<HTMLElement>('[data-esito]')!;
-    let canale = 'whatsapp';
-    for (const b of modulo.querySelectorAll<HTMLButtonElement>('[data-canale]')) {
-      b.addEventListener('click', () => { canale = b.dataset.canale!; });
-    }
 
     modulo.addEventListener('submit', (e) => {
       e.preventDefault();
+      const canale = (e.submitter as HTMLButtonElement | null)?.dataset.canale ?? 'whatsapp';
       esito.className = 'esito';
       if (!modulo.checkValidity()) {
         modulo.classList.add('verificato');
@@ -110,6 +107,8 @@ const titolo = tipo === 'preventivo' ? 'Richiesta di preventivo dal sito' : 'Can
         : 'Si è aperto WhatsApp con il messaggio pronto: premi Invia.';
       esito.classList.add('ok');
     });
+    for (const control of modulo.querySelectorAll<HTMLFieldSetElement | HTMLButtonElement>('fieldset, [data-canale]')) control.disabled = false;
+    modulo.querySelector<HTMLElement>('[data-alternativa]')!.hidden = true;
   }
 </script>
 
